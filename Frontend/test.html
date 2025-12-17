@@ -1,0 +1,883 @@
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="dashboard-container">
+        <div class="dashboard-header">
+            <div class="dashboard-header-content">
+                <div class="dashboard-title">Admin Dashboard</div>
+                <div class="dashboard-nav">
+                    <button class="active" onclick="switchAdminTab('overview')">Overview</button>
+                    <button onclick="switchAdminTab('users')">Users</button>
+                    <button onclick="switchAdminTab('transactions')">Transactions</button>
+                    <button onclick="switchAdminTab('withdrawals')">Withdrawals</button>
+                    <button onclick="switchAdminTab('reports')">Reports</button>
+                    <button onclick="showLanding()">Back to Home</button>
+                </div>
+            </div>
+        </div>
+        <div class="dashboard-main">
+            <!-- Overview Tab -->
+            <div id="adminOverview" class="dashboard-section active">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Total Users</div>
+                        <div class="metric-value">1,248</div>
+                        <div class="metric-change">↑ 12% from last month</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Total Savings</div>
+                        <div class="metric-value">₦45.2M</div>
+                        <div class="metric-change">↑ 8% from last month</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Pending Withdrawals</div>
+                        <div class="metric-value">23</div>
+                        <div class="metric-change">Awaiting approval</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Active Collections</div>
+                        <div class="metric-value">156</div>
+                        <div class="metric-change">Today's collections</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Monthly Savings Trend</div>
+                    <canvas id="adminChart1" style="max-height: 300px;"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Transaction Distribution</div>
+                    <canvas id="adminChart2" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="adminUsers" class="dashboard-section">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Savings</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#U001</td>
+                                <td>Chioma Okafor</td>
+                                <td>chioma@email.com</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>₦125,000</td>
+                                <td><div class="action-buttons"><button class="btn-sm-action btn-view">View</button></div></td>
+                            </tr>
+                            <tr>
+                                <td>#U002</td>
+                                <td>Emeka Nwosu</td>
+                                <td>emeka@email.com</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>₦89,500</td>
+                                <td><div class="action-buttons"><button class="btn-sm-action btn-view">View</button></div></td>
+                            </tr>
+                            <tr>
+                                <td>#U003</td>
+                                <td>Ngozi Eze</td>
+                                <td>ngozi@email.com</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td>₦0</td>
+                                <td><div class="action-buttons"><button class="btn-sm-action btn-approve">Approve</button><button class="btn-sm-action btn-reject">Reject</button></div></td>
+                            </tr>
+                            <tr>
+                                <td>#U004</td>
+                                <td>Chukwu Obi</td>
+                                <td>chukwu@email.com</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>₦156,200</td>
+                                <td><div class="action-buttons"><button class="btn-sm-action btn-view">View</button></div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Transactions Tab -->
+            <div id="adminTransactions" class="dashboard-section">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>User</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#TXN001</td>
+                                <td>Chioma Okafor</td>
+                                <td>Deposit</td>
+                                <td>₦50,000</td>
+                                <td>2024-01-15</td>
+                                <td><span class="status-badge status-completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>#TXN002</td>
+                                <td>Emeka Nwosu</td>
+                                <td>Withdrawal</td>
+                                <td>₦25,000</td>
+                                <td>2024-01-14</td>
+                                <td><span class="status-badge status-completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>#TXN003</td>
+                                <td>Ngozi Eze</td>
+                                <td>Deposit</td>
+                                <td>₦30,000</td>
+                                <td>2024-01-13</td>
+                                <td><span class="status-badge status-completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>#TXN004</td>
+                                <td>Chukwu Obi</td>
+                                <td>Deposit</td>
+                                <td>₦45,000</td>
+                                <td>2024-01-12</td>
+                                <td><span class="status-badge status-completed">Completed</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Withdrawals Tab -->
+            <div id="adminWithdrawals" class="dashboard-section">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>User</th>
+                                <th>Amount</th>
+                                <th>Requested</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#WD001</td>
+                                <td>Chioma Okafor</td>
+                                <td>₦50,000</td>
+                                <td>2024-01-15</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td><div class="action-buttons"><button class="btn-sm-action btn-approve">Approve</button><button class="btn-sm-action btn-reject">Reject</button></div></td>
+                            </tr>
+                            <tr>
+                                <td>#WD002</td>
+                                <td>Emeka Nwosu</td>
+                                <td>₦30,000</td>
+                                <td>2024-01-14</td>
+                                <td><span class="status-badge status-completed">Approved</span></td>
+                                <td><div class="action-buttons"><button class="btn-sm-action btn-view">View</button></div></td>
+                            </tr>
+                            <tr>
+                                <td>#WD003</td>
+                                <td>Ngozi Eze</td>
+                                <td>₦20,000</td>
+                                <td>2024-01-13</td>
+                                <td><span class="status-badge status-rejected">Rejected</span></td>
+                                <td><div class="action-buttons"><button class="btn-sm-action btn-view">View</button></div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div id="adminReports" class="dashboard-section">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Total Revenue</div>
+                        <div class="metric-value">₦2.4M</div>
+                        <div class="metric-change">From all transactions</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Avg. Savings/User</div>
+                        <div class="metric-value">₦36,200</div>
+                        <div class="metric-change">Across all users</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Withdrawal Rate</div>
+                        <div class="metric-value">18%</div>
+                        <div class="metric-change">Of total savings</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Active Staff</div>
+                        <div class="metric-value">24</div>
+                        <div class="metric-change">Field agents</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">User Growth Over Time</div>
+                    <canvas id="adminChart3" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Staff Dashboard -->
+    <div id="staffDashboard" class="dashboard-container">
+        <div class="dashboard-header">
+            <div class="dashboard-header-content">
+                <div class="dashboard-title">Staff Dashboard</div>
+                <div class="dashboard-nav">
+                    <button class="active" onclick="switchStaffTab('overview')">Overview</button>
+                    <button onclick="switchStaffTab('collections')">Collections</button>
+                    <button onclick="switchStaffTab('members')">Members</button>
+                    <button onclick="switchStaffTab('defaulters')">Defaulters</button>
+                    <button onclick="showLanding()">Back to Home</button>
+                </div>
+            </div>
+        </div>
+        <div class="dashboard-main">
+            <!-- Overview Tab -->
+            <div id="staffOverview" class="dashboard-section active">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Today's Collections</div>
+                        <div class="metric-value">₦285,000</div>
+                        <div class="metric-change">From 45 members</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Members Assigned</div>
+                        <div class="metric-value">156</div>
+                        <div class="metric-change">In your zone</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Collection Rate</div>
+                        <div class="metric-value">89%</div>
+                        <div class="metric-change">This month</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Defaulters</div>
+                        <div class="metric-value">12</div>
+                        <div class="metric-change">Flagged members</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Weekly Collections</div>
+                    <canvas id="staffChart1" style="max-height: 300px;"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Collection Status</div>
+                    <canvas id="staffChart2" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+
+            <!-- Collections Tab -->
+            <div id="staffCollections" class="dashboard-section">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Chioma Okafor</td>
+                                <td>₦10,000</td>
+                                <td>2024-01-15</td>
+                                <td><span class="status-badge status-completed">Collected</span></td>
+                                <td>Regular payment</td>
+                            </tr>
+                            <tr>
+                                <td>Emeka Nwosu</td>
+                                <td>₦10,000</td>
+                                <td>2024-01-15</td>
+                                <td><span class="status-badge status-completed">Collected</span></td>
+                                <td>Regular payment</td>
+                            </tr>
+                            <tr>
+                                <td>Ngozi Eze</td>
+                                <td>₦10,000</td>
+                                <td>2024-01-14</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td>Awaiting payment</td>
+                            </tr>
+                            <tr>
+                                <td>Chukwu Obi</td>
+                                <td>₦10,000</td>
+                                <td>2024-01-15</td>
+                                <td><span class="status-badge status-completed">Collected</span></td>
+                                <td>Regular payment</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Members Tab -->
+            <div id="staffMembers" class="dashboard-section">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Member ID</th>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Savings</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#M001</td>
+                                <td>Chioma Okafor</td>
+                                <td>+234 801 234 5678</td>
+                                <td>₦125,000</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>#M002</td>
+                                <td>Emeka Nwosu</td>
+                                <td>+234 802 345 6789</td>
+                                <td>₦89,500</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>#M003</td>
+                                <td>Ngozi Eze</td>
+                                <td>+234 803 456 7890</td>
+                                <td>₦45,000</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>#M004</td>
+                                <td>Chukwu Obi</td>
+                                <td>+234 804 567 8901</td>
+                                <td>₦156,200</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Defaulters Tab -->
+            <div id="staffDefaulters" class="dashboard-section">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Days Overdue</th>
+                                <th>Amount Due</th>
+                                <th>Last Payment</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ngozi Eze</td>
+                                <td>5 days</td>
+                                <td>₦10,000</td>
+                                <td>2024-01-10</td>
+                                <td><div class="action-buttons"><button class="btn-sm-action btn-view">Follow Up</button></div></td>
+                            </tr>
+                            <tr>
+                                <td>Ada Okoro</td>
+                                <td>8 days</td>
+                                <td>₦20,000</td>
+                                <td>2024-01-07</td>
+                                <td><div class="action-buttons"><button class="btn-sm-action btn-view">Follow Up</button></div></td>
+                            </tr>
+                            <tr>
+                                <td>Tunde Adeyemi</td>
+                                <td>3 days</td>
+                                <td>₦10,000</td>
+                                <td>2024-01-12</td>
+                                <td><div class="action-buttons"><button class="btn-sm-action btn-view">Follow Up</button></div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Dashboard -->
+    <div id="userDashboard" class="dashboard-container">
+        <div class="dashboard-header">
+            <div class="dashboard-header-content">
+                <div class="dashboard-title">My Dashboard</div>
+                <div class="dashboard-nav">
+                    <button class="active" onclick="switchUserTab('overview')">Overview</button>
+                    <button onclick="switchUserTab('transactions')">Transactions</button>
+                    <button onclick="switchUserTab('withdrawals')">Withdrawals</button>
+                    <button onclick="switchUserTab('profile')">Profile</button>
+                    <button onclick="showLanding()">Back to Home</button>
+                </div>
+            </div>
+        </div>
+        <div class="dashboard-main">
+            <!-- Overview Tab -->
+            <div id="userOverview" class="dashboard-section active">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Total Savings</div>
+                        <div class="metric-value">₦125,000</div>
+                        <div class="metric-change">↑ 5% this month</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Monthly Contribution</div>
+                        <div class="metric-value">₦10,000</div>
+                        <div class="metric-change">Due on 15th</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Available for Withdrawal</div>
+                        <div class="metric-value">₦50,000</div>
+                        <div class="metric-change">After 6 months</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Savings Plans</div>
+                        <div class="metric-value">3</div>
+                        <div class="metric-change">Active plans</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Savings Growth</div>
+                    <canvas id="userChart1" style="max-height: 300px;"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Contribution Breakdown</div>
+                    <canvas id="userChart2" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+
+            <!-- Transactions Tab -->
+            <div id="userTransactions" class="dashboard-section">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2024-01-15</td>
+                                <td>Deposit</td>
+                                <td>₦10,000</td>
+                                <td>₦125,000</td>
+                                <td><span class="status-badge status-completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-10</td>
+                                <td>Deposit</td>
+                                <td>₦10,000</td>
+                                <td>₦115,000</td>
+                                <td><span class="status-badge status-completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-05</td>
+                                <td>Withdrawal</td>
+                                <td>₦5,000</td>
+                                <td>₦105,000</td>
+                                <td><span class="status-badge status-completed">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>2023-12-15</td>
+                                <td>Deposit</td>
+                                <td>₦10,000</td>
+                                <td>₦110,000</td>
+                                <td><span class="status-badge status-completed">Completed</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Withdrawals Tab -->
+            <div id="userWithdrawals" class="dashboard-section">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Amount</th>
+                                <th>Requested</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#WD-U001</td>
+                                <td>₦25,000</td>
+                                <td>2024-01-10</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td><div class="action-buttons"><button class="btn-sm-action btn-view">View</button></div></td>
+                            </tr>
+                            <tr>
+                                <td>#WD-U002</td>
+                                <td>₦15,000</td>
+                                <td>2024-01-05</td>
+                                <td><span class="status-badge status-completed">Approved</span></td>
+                                <td><div class="action-buttons"><button class="btn-sm-action btn-view">View</button></div></td>
+                            </tr>
+                            <tr>
+                                <td>#WD-U003</td>
+                                <td>₦20,000</td>
+                                <td>2023-12-28</td>
+                                <td><span class="status-badge status-completed">Completed</span></td>
+                                <td><div class="action-buttons"><button class="btn-sm-action btn-view">View</button></div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="userProfile" class="dashboard-section">
+                <div class="metric-card" style="max-width: 600px;">
+                    <h3 style="margin-bottom: 1.5rem;">Profile Information</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; color: var(--muted-foreground); margin-bottom: 0.5rem;">Full Name</label>
+                            <input type="text" value="Chioma Okafor" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); background-color: var(--input); color: var(--foreground);">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; color: var(--muted-foreground); margin-bottom: 0.5rem;">Email</label>
+                            <input type="email" value="chioma@email.com" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); background-color: var(--input); color: var(--foreground);">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; color: var(--muted-foreground); margin-bottom: 0.5rem;">Phone</label>
+                            <input type="tel" value="+234 801 234 5678" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); background-color: var(--input); color: var(--foreground);">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; color: var(--muted-foreground); margin-bottom: 0.5rem;">Member ID</label>
+                            <input type="text" value="#M001" disabled style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); background-color: var(--muted); color: var(--muted-foreground);">
+                        </div>
+                        <button class="btn btn-primary" style="margin-top: 1rem;">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chartColors = {
+            primary: 'oklch(0.45 0.15 260)',
+            accent: 'oklch(0.65 0.12 180)',
+            chart3: 'oklch(0.55 0.1 120)',
+            chart4: 'oklch(0.75 0.08 40)',
+            chart5: 'oklch(0.35 0.12 300)'
+        };
+
+        // Admin Dashboard Charts
+        function initAdminCharts() {
+            // Chart 1: Monthly Savings Trend
+            const ctx1 = document.getElementById('adminChart1');
+            if (ctx1) {
+                new Chart(ctx1, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Total Savings',
+                            data: [12000000, 15000000, 18000000, 22000000, 28000000, 45200000],
+                            borderColor: chartColors.primary,
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { display: true }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '₦' + (value / 1000000).toFixed(0) + 'M';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Chart 2: Transaction Distribution
+            const ctx2 = document.getElementById('adminChart2');
+            if (ctx2) {
+                new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Deposits', 'Withdrawals', 'Transfers'],
+                        datasets: [{
+                            data: [65, 25, 10],
+                            backgroundColor: [
+                                chartColors.primary,
+                                chartColors.accent,
+                                chartColors.chart3
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+
+            // Chart 3: User Growth
+            const ctx3 = document.getElementById('adminChart3');
+            if (ctx3) {
+                new Chart(ctx3, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'New Users',
+                            data: [150, 180, 220, 280, 320, 248],
+                            backgroundColor: chartColors.primary
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { display: true }
+                        },
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Staff Dashboard Charts
+        function initStaffCharts() {
+            // Chart 1: Weekly Collections
+            const ctx1 = document.getElementById('staffChart1');
+            if (ctx1) {
+                new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                        datasets: [{
+                            label: 'Collections',
+                            data: [45000, 52000, 48000, 61000, 55000, 24000],
+                            backgroundColor: chartColors.primary
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { display: true }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '₦' + (value / 1000).toFixed(0) + 'K';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Chart 2: Collection Status
+            const ctx2 = document.getElementById('staffChart2');
+            if (ctx2) {
+                new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Collected', 'Pending', 'Defaulted'],
+                        datasets: [{
+                            data: [89, 8, 3],
+                            backgroundColor: [
+                                chartColors.chart3,
+                                chartColors.chart4,
+                                chartColors.chart5
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+        }
+
+        // User Dashboard Charts
+        function initUserCharts() {
+            // Chart 1: Savings Growth
+            const ctx1 = document.getElementById('userChart1');
+            if (ctx1) {
+                new Chart(ctx1, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'My Savings',
+                            data: [75000, 85000, 95000, 105000, 115000, 125000],
+                            borderColor: chartColors.primary,
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { display: true }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '₦' + (value / 1000).toFixed(0) + 'K';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Chart 2: Contribution Breakdown
+            const ctx2 = document.getElementById('userChart2');
+            if (ctx2) {
+                new Chart(ctx2, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Regular Savings', 'Emergency Fund', 'Investment Plan'],
+                        datasets: [{
+                            data: [60, 25, 15],
+                            backgroundColor: [
+                                chartColors.primary,
+                                chartColors.accent,
+                                chartColors.chart3
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Navigation Functions
+        function showDashboard(dashboard) {
+            document.getElementById('landingPage').classList.add('hidden');
+            document.getElementById('adminDashboard').classList.remove('active');
+            document.getElementById('staffDashboard').classList.remove('active');
+            document.getElementById('userDashboard').classList.remove('active');
+
+            if (dashboard === 'admin') {
+                document.getElementById('adminDashboard').classList.add('active');
+                setTimeout(initAdminCharts, 100);
+            } else if (dashboard === 'staff') {
+                document.getElementById('staffDashboard').classList.add('active');
+                setTimeout(initStaffCharts, 100);
+            } else if (dashboard === 'user') {
+                document.getElementById('userDashboard').classList.add('active');
+                setTimeout(initUserCharts, 100);
+            }
+        }
+
+        function showLanding() {
+            document.getElementById('landingPage').classList.remove('hidden');
+            document.getElementById('adminDashboard').classList.remove('active');
+            document.getElementById('staffDashboard').classList.remove('active');
+            document.getElementById('userDashboard').classList.remove('active');
+        }
+
+        // Admin Dashboard Tab Switching
+        function switchAdminTab(tab) {
+            document.querySelectorAll('#adminDashboard .dashboard-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('#adminDashboard .dashboard-nav button').forEach(el => el.classList.remove('active'));
+            document.getElementById('admin' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+            event.target.classList.add('active');
+            if (tab === 'overview') {
+                setTimeout(initAdminCharts, 100);
+            }
+        }
+
+        // Staff Dashboard Tab Switching
+        function switchStaffTab(tab) {
+            document.querySelectorAll('#staffDashboard .dashboard-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('#staffDashboard .dashboard-nav button').forEach(el => el.classList.remove('active'));
+            document.getElementById('staff' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+            event.target.classList.add('active');
+            if (tab === 'overview') {
+                setTimeout(initStaffCharts, 100);
+            }
+        }
+
+        // User Dashboard Tab Switching
+        function switchUserTab(tab) {
+            document.querySelectorAll('#userDashboard .dashboard-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('#userDashboard .dashboard-nav button').forEach(el => el.classList.remove('active'));
+            document.getElementById('user' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+            event.target.classList.add('active');
+            if (tab === 'overview') {
+                setTimeout(initUserCharts, 100);
+            }
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', function() {
+            console.log('[v0] SavingsHub platform loaded successfully');
+        });
+    </script>

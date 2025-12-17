@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - SavingsHub</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* V6 Theme - OKLCH Color Space */
+            --background: oklch(0.98 0.001 0);
+            --foreground: oklch(0.15 0.01 0);
+            --card: oklch(1 0 0);
+            --card-foreground: oklch(0.15 0.01 0);
+            --primary: oklch(0.45 0.15 260);
+            --primary-foreground: oklch(0.98 0.001 0);
+            --secondary: oklch(0.92 0.02 260);
+            --secondary-foreground: oklch(0.15 0.01 0);
+            --muted: oklch(0.94 0.01 0);
+            --muted-foreground: oklch(0.55 0.02 0);
+            --accent: oklch(0.65 0.12 180);
+            --accent-foreground: oklch(0.98 0.001 0);
+            --border: oklch(0.92 0.01 0);
+            --input: oklch(0.95 0.01 0);
+            --destructive: oklch(0.577 0.245 27.325);
+            --success: oklch(0.65 0.15 140);
+            --warning: oklch(0.75 0.12 50);
+            --info: oklch(0.65 0.12 260);
+            --radius: 0.625rem;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--muted-foreground);
+        }
+
+        /* Header */
+        header {
+            background-color: var(--card);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 2rem;
+            height: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding-left: 2rem;
+            border-left: 1px solid var(--border);
+        }
+
+        .user-avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 0;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            background-color: var(--card);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 70px;
+            max-height: calc(100vh - 70px);
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            padding: 0.875rem 1.5rem;
+            text-decoration: none;
+            color: var(--muted-foreground);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            border-left: 3px solid transparent;
+            background: none;
+            display: block;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-item:hover {
+            background-color: var(--muted);
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background-color: var(--secondary);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            padding: 2rem;
+            max-width: 1600px;
+            width: 100%;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .dashboard-header h1 {
+            margin: 0;
+        }
+
+        .dashboard-header p {
+            margin-top: 0.5rem;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .stat-label {
+            color: var(--muted-foreground);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--foreground);
+            margin-bottom: 0.75rem;
+            line-height: 1;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--destructive);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background-color: var(--muted);
+            border-radius: 9999px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: width 0.3s ease;
+        }
+
+        /* Buttons */
+        button, .button {
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .btn-primary:hover {
+            background-color: oklch(0.40 0.15 260);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--secondary-foreground);
+        }
+
+        .btn-secondary:hover {
+            background-color: oklch(0.88 0.02 260);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            opacity: 0.9;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.875rem 1.5rem;
+            background: none;
+            border: none;
+            color: var(--muted-foreground);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+        }
+
+        .tab:hover {
+            color: var(--foreground);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Table */
+        .table-container {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: var(--muted);
+        }
+
+        th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--foreground);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        tbody tr:hover {
+            background-color: var(--muted);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.875rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-pending {
+            background-color: oklch(0.75 0.12 50 / 0.15);
+            color: var(--warning);
+        }
+
+        .badge-completed {
+            background-color: oklch(0.65 0.15 140 / 0.15);
+            color: var(--success);
+        }
+
+        .badge-active {
+            background-color: oklch(0.45 0.15 260 / 0.15);
+            color: var(--primary);
+        }
+
+        .badge-inactive {
+            background-color: oklch(0.94 0.01 0);
+            color: var(--muted-foreground);
+        }
+
+        /* Forms */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--foreground);
+            font-size: 0.95rem;
+        }
+
+        input, select, textarea {
+            padding: 0.625rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            color: var(--foreground);
+            background-color: var(--input);
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        /* Notifications */
+        .notification {
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.success {
+            background-color: oklch(0.65 0.15 140 / 0.1);
+            color: var(--success);
+        }
+
+        .notification-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.25rem;
+            color: inherit;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                flex-direction: row;
+                flex-wrap: wrap;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 1rem;
+                gap: 0.25rem;
+                position: static;
+                max-height: none;
+            }
+
+            .nav-item {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+                flex-shrink: 0;
+            }
+
+            .dashboard-content {
+                padding: 1.5rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+
+            .header-right {
+                gap: 1rem;
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .user-profile {
+                padding-left: 0;
+                border-left: none;
+            }
+
+            .dashboard-content {
+                padding: 1rem;
+            }
+
+            .sidebar {
+                flex-direction: row;
+                overflow-x: auto;
+                padding: 0.75rem;
+                gap: 0.25rem;
+            }
+
+            .nav-item {
+                padding: 0.5rem 0.875rem;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            table {
+                font-size: 0.875rem;
+            }
+
+            th, td {
+                padding: 0.75rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content {
+                padding: 0.75rem 1rem;
+            }
+
+            .logo {
+                font-size: 1rem;
+            }
+
+            .logo-icon {
+                width: 1.75rem;
+                height: 1.75rem;
+                font-size: 0.75rem;
+            }
+
+            .user-avatar {
+                width: 2rem;
+                height: 2rem;
+                font-size: 0.875rem;
+            }
+
+            .stat-value {
+                font-size: 1.75rem;
+            }
+
+            .stat-label {
+                font-size: 0.75rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            button, .button {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.25rem;
+            }
+
+            .cards-grid {
+                gap: 0.75rem;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <a href="#" class="logo">
+                <div class="logo-icon">SH</div>
+                SavingsHub
+            </a>
+            <div class="header-right">
+                <span>Welcome back!</span>
+                <div class="user-profile">
+                    <div class="user-avatar">C</div>
+                    <div>
+                        <div style="font-weight: 600;">Chioma Nwosu</div>
+                        <div style="font-size: 0.875rem; color: var(--muted-foreground);">chioma@email.com</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <a href="#overview" class="nav-item active" onclick="showTab('overview', event)">📊 Overview</a>
+            <a href="#savings" class="nav-item" onclick="showTab('savings', event)">💰 My Savings</a>
+            <a href="#transactions" class="nav-item" onclick="showTab('transactions', event)">📝 Transactions</a>
+            <a href="#withdrawals" class="nav-item" onclick="showTab('withdrawals', event)">💳 Withdrawals</a>
+            <a href="#profile" class="nav-item" onclick="showTab('profile', event)">⚙️ Profile</a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <!-- Notifications Container -->
+            <div id="notificationsContainer"></div>
+
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <div class="dashboard-header">
+                    <div>
+                        <h1>Dashboard Overview</h1>
+                        <p>Track your savings journey with us</p>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="cards-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Savings</div>
+                        <div class="stat-value">₦125,450</div>
+                        <div class="stat-change positive">↑ 8.2% this month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Current Balance</div>
+                        <div class="stat-value">₦45,280</div>
+                        <div class="stat-change positive">✓ Available to withdraw</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Contribution This Month</div>
+                        <div class="stat-value">₦12,500</div>
+                        <div class="stat-change positive">↑ On track with target</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Active Plans</div>
+                        <div class="stat-value">3</div>
+                        <div class="stat-change positive">All progressing well</div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); margin-top: 2rem;">
+                    <div class="stat-card">
+                        <h3 style="margin-bottom: 1rem;">Savings Growth</h3>
+                        <canvas id="savingsChart"></canvas>
+                    </div>
+                    <div class="stat-card">
+                        <h3 style="margin-bottom: 1rem;">Contribution Breakdown</h3>
+                        <canvas id="contributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Savings Tab -->
+            <div id="savings" class="tab-content">
+                <div class="dashboard-header">
+                    <div>
+                        <h1>My Savings Plans</h1>
+                        <p>Manage your active savings goals and plans</p>
+                    </div>
+                    <button class="button btn-primary" onclick="openAddPlanModal()">+ New Savings Plan</button>
+                </div>
+
+                <!-- Savings Plans Cards -->
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                    <div class="stat-card">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <div>
+                                <h3 style="margin: 0; margin-bottom: 0.25rem;">Emergency Fund</h3>
+                                <p style="margin: 0; font-size: 0.875rem;">Personal savings</p>
+                            </div>
+                            <span class="badge badge-active">Active</span>
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span style="font-size: 0.875rem; font-weight: 600;">₦35,000 of ₦50,000</span>
+                                <span style="font-size: 0.875rem; color: var(--muted-foreground);">70%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 70%;"></div>
+                            </div>
+                        </div>
+                        <p style="margin: 0; margin-bottom: 1rem; font-size: 0.875rem;">Next contribution: ₦5,000 on Nov 15</p>
+                        <button class="button btn-sm btn-outline" style="width: 100%;">View Details</button>
+                    </div>
+
+                    <div class="stat-card">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <div>
+                                <h3 style="margin: 0; margin-bottom: 0.25rem;">Business Investment</h3>
+                                <p style="margin: 0; font-size: 0.875rem;">Partnership scheme</p>
+                            </div>
+                            <span class="badge badge-active">Active</span>
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span style="font-size: 0.875rem; font-weight: 600;">₦60,000 of ₦100,000</span>
+                                <span style="font-size: 0.875rem; color: var(--muted-foreground);">60%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%;"></div>
+                            </div>
+                        </div>
+                        <p style="margin: 0; margin-bottom: 1rem; font-size: 0.875rem;">Next contribution: ₦10,000 on Nov 20</p>
+                        <button class="button btn-sm btn-outline" style="width: 100%;">View Details</button>
+                    </div>
+
+                    <div class="stat-card">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <div>
+                                <h3 style="margin: 0; margin-bottom: 0.25rem;">Education Fund</h3>
+                                <p style="margin: 0; font-size: 0.875rem;">Children's education</p>
+                            </div>
+                            <span class="badge badge-active">Active</span>
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span style="font-size: 0.875rem; font-weight: 600;">₦30,450 of ₦75,000</span>
+                                <span style="font-size: 0.875rem; color: var(--muted-foreground);">40.6%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 40.6%;"></div>
+                            </div>
+                        </div>
+                        <p style="margin: 0; margin-bottom: 1rem; font-size: 0.875rem;">Next contribution: ₦3,500 on Nov 18</p>
+                        <button class="button btn-sm btn-outline" style="width: 100%;">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transactions Tab -->
+            <div id="transactions" class="tab-content">
+                <div class="dashboard-header">
+                    <div>
+                        <h1>Transaction History</h1>
+                        <p>View all your savings contributions and transactions</p>
+                    </div>
+                </div>
+
+                <!-- Transaction Tabs -->
+                <div class="tabs">
+                    <button class="tab active" onclick="showTransactionTab('all', this)">All Transactions</button>
+                    <button class="tab" onclick="showTransactionTab('contributions', this)">Contributions</button>
+                    <button class="tab" onclick="showTransactionTab('returns', this)">Returns</button>
+                </div>
+
+                <!-- Transactions Table -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Plan</th>
+                                <th>Amount</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsBody">
+                            <!-- Table rows populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Withdrawals Tab -->
+            <div id="withdrawals" class="tab-content">
+                <div class="dashboard-header">
+                    <div>
+                        <h1>Withdrawal Requests</h1>
+                        <p>Manage your withdrawal requests and history</p>
+                    </div>
+                    <button class="button btn-primary" onclick="openWithdrawalModal()">+ New Withdrawal</button>
+                </div>
+
+                <!-- Withdrawal Tabs -->
+                <div class="tabs">
+                    <button class="tab active" onclick="showWithdrawalTab('pending', this)">Pending (2)</button>
+                    <button class="tab" onclick="showWithdrawalTab('approved', this)">Approved (5)</button>
+                    <button class="tab" onclick="showWithdrawalTab('completed', this)">Completed (12)</button>
+                </div>
+
+                <!-- Pending Withdrawals -->
+                <div id="pending-withdrawal-tab" class="tab-content active">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date Requested</th>
+                                    <th>Amount</th>
+                                    <th>From Plan</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pendingWithdrawalsBody">
+                                <!-- Table rows populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Approved Withdrawals -->
+                <div id="approved-withdrawal-tab" class="tab-content" style="display: none;">
+                    <p style="color: var(--muted-foreground); padding: 1.5rem;">Showing recently approved withdrawal requests</p>
+                </div>
+
+                <!-- Completed Withdrawals -->
+                <div id="completed-withdrawal-tab" class="tab-content" style="display: none;">
+                    <p style="color: var(--muted-foreground); padding: 1.5rem;">Showing completed withdrawal requests</p>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profile" class="tab-content">
+                <div class="dashboard-header">
+                    <div>
+                        <h1>Profile Settings</h1>
+                        <p>Manage your personal information and preferences</p>
+                    </div>
+                </div>
+
+                <div class="stat-card" style="max-width: 600px;">
+                    <h3 style="margin-bottom: 1.5rem;">Personal Information</h3>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" value="Chioma Nwosu" />
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" value="chioma@email.com" />
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" value="+2348012345671" />
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date" value="1990-05-15" />
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" value="Lagos, Nigeria" />
+                    </div>
+                    <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Bank Details</h3>
+                    <div class="form-group">
+                        <label>Bank Name</label>
+                        <select>
+                            <option selected>GT Bank</option>
+                            <option>Access Bank</option>
+                            <option>First Bank</option>
+                            <option>Zenith Bank</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Account Number</label>
+                        <input type="text" value="0123456789" />
+                    </div>
+                    <div class="form-group">
+                        <label>Account Name</label>
+                        <input type="text" value="Chioma Nwosu" />
+                    </div>
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <button class="button btn-primary">Save Changes</button>
+                        <button class="button btn-secondary">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Sample Data
+        const transactions = [
+            { date: '2025-11-10', description: 'Monthly contribution', plan: 'Emergency Fund', amount: 5000, type: 'contribution', status: 'completed' },
+            { date: '2025-11-08', description: 'Interest earned', plan: 'Business Investment', amount: 250, type: 'return', status: 'completed' },
+            { date: '2025-11-05', description: 'Monthly contribution', plan: 'Education Fund', amount: 3500, type: 'contribution', status: 'completed' },
+            { date: '2025-11-01', description: 'Dividend payout', plan: 'Business Investment', amount: 1200, type: 'return', status: 'completed' },
+            { date: '2025-10-28', description: 'Monthly contribution', plan: 'Emergency Fund', amount: 5000, type: 'contribution', status: 'completed' },
+            { date: '2025-10-25', description: 'Interest earned', plan: 'Education Fund', amount: 150, type: 'return', status: 'completed' },
+        ];
+
+        const pendingWithdrawals = [
+            { date: '2025-11-09', amount: 10000, plan: 'Emergency Fund', status: 'pending' },
+            { date: '2025-11-07', amount: 5000, plan: 'Education Fund', status: 'pending' },
+        ];
+
+        // Initialize Dashboard
+        function initializeDashboard() {
+            renderTransactions();
+            renderPendingWithdrawals();
+            initializeCharts();
+        }
+
+        // Render Transactions
+        function renderTransactions() {
+            const tbody = document.getElementById('transactionsBody');
+            tbody.innerHTML = transactions.map(t => `
+                <tr>
+                    <td>${t.date}</td>
+                    <td><strong>${t.description}</strong></td>
+                    <td>${t.plan}</td>
+                    <td style="font-weight: 600; color: ${t.type === 'return' ? 'var(--success)' : 'var(--foreground)'};">
+                        ${t.type === 'return' ? '+' : ''}₦${t.amount.toLocaleString()}
+                    </td>
+                    <td><span style="text-transform: capitalize;">${t.type}</span></td>
+                    <td><span class="badge badge-completed">✓ ${t.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        // Render Pending Withdrawals
+        function renderPendingWithdrawals() {
+            const tbody = document.getElementById('pendingWithdrawalsBody');
+            tbody.innerHTML = pendingWithdrawals.map((w, idx) => `
+                <tr>
+                    <td>${w.date}</td>
+                    <td><strong>₦${w.amount.toLocaleString()}</strong></td>
+                    <td>${w.plan}</td>
+                    <td><span class="badge badge-pending">⏱️ ${w.status}</span></td>
+                    <td>
+                        <button class="button btn-sm btn-outline" onclick="cancelWithdrawal(${idx})">Cancel</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Tab Navigation
+        function showTab(tabName, event) {
+            if (event) event.preventDefault();
+            
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            const tab = document.getElementById(tabName);
+            if (tab) {
+                tab.classList.add('active');
+                event.target.classList.add('active');
+            }
+        }
+
+        // Transaction Tab Navigation
+        function showTransactionTab(tabName, button) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                if (tab.id && !tab.id.includes('withdrawal')) {
+                    tab.style.display = 'none';
+                }
+            });
+            
+            if (tabName === 'all') {
+                document.querySelectorAll('#transactions .tab-content').forEach(tab => tab.style.display = 'block');
+            } else {
+                document.querySelector(`#transactions [data-tab="${tabName}"]`)?.style.display === 'block';
+            }
+            
+            document.querySelectorAll('.tabs:not([data-withdrawal]) .tab').forEach(t => t.classList.remove('active'));
+            button.classList.add('active');
+        }
+
+        // Withdrawal Tab Navigation
+        function showWithdrawalTab(tabName, button) {
+            document.querySelectorAll('[id$="-withdrawal-tab"]').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            const tabElement = document.getElementById(`${tabName}-withdrawal-tab`);
+            if (tabElement) {
+                tabElement.style.display = 'block';
+            }
+            
+            document.querySelectorAll('.tabs [data-withdrawal] .tab, .tabs:last-of-type .tab').forEach(t => t.classList.remove('active'));
+            button.classList.add('active');
+        }
+
+        // Modal Functions
+        function openAddPlanModal() {
+            showNotification('Feature coming soon! You can add new savings plans here.', 'success');
+        }
+
+        function openWithdrawalModal() {
+            showNotification('Withdrawal form will be available here.', 'success');
+        }
+
+        // Action Functions
+        function cancelWithdrawal(idx) {
+            pendingWithdrawals.splice(idx, 1);
+            showNotification('Withdrawal request cancelled successfully.', 'success');
+            renderPendingWithdrawals();
+        }
+
+        // Notification System
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notificationsContainer');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                ${message}
+                <button class="notification-close" onclick="this.parentElement.remove()">✕</button>
+            `;
+            container.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        // Chart Initialization
+        function initializeCharts() {
+            const savingsCtx = document.getElementById('savingsChart');
+            if (savingsCtx) {
+                new Chart(savingsCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+                        datasets: [{
+                            label: 'Total Savings',
+                            data: [15000, 22000, 30000, 40000, 52000, 62000, 75000, 88000, 102000, 115000, 125450],
+                            borderColor: 'oklch(0.45 0.15 260)',
+                            backgroundColor: 'oklch(0.45 0.15 260 / 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: true } }
+                    }
+                });
+            }
+
+            const contributionCtx = document.getElementById('contributionChart');
+            if (contributionCtx) {
+                new Chart(contributionCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Emergency Fund', 'Business Investment', 'Education Fund'],
+                        datasets: [{
+                            data: [35000, 60000, 30450],
+                            backgroundColor: ['oklch(0.45 0.15 260)', 'oklch(0.65 0.12 180)', 'oklch(0.65 0.15 140)']
+                        }]
+                    },
+                    options: { responsive: true }
+                });
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

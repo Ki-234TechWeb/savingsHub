@@ -1,0 +1,207 @@
+<!-- active plan sql -->
+
+SELECT 
+    user_id,
+    plan_type,
+    SUM(amount) AS total_contributions
+FROM contributions
+GROUP BY user_id, plan_type;
+
+SELECT COUNT(*) AS pending_collections
+FROM users u
+WHERE u.agent = ?
+  AND NOT EXISTS (
+    SELECT 1 
+    FROM contributions c
+    WHERE c.user_id = u.user_id
+      AND DATE(c.date) = CURDATE()
+  );
+
+  $stmt = $pdo->prepare("
+    INSERT INTO notifications 
+    (actor_type, actor_id, action, target_table, target_id, message, status) 
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+");
+
+$stmt->execute([
+    'staff',               // actor_type
+    12,                    // actor_id (agent ID)
+    'collect_funds',       // action
+    'users',               // target_table
+    2,                     // target_id (User A)
+    'Staff #12 recorded a collection for User #2', // message
+    'unread'               // status
+]);
+
+UPDATE userplans u
+JOIN (
+    SELECT user_plan_id, SUM(amount) AS total_contributions
+    FROM contributions
+    GROUP BY user_plan_id
+) c ON u.user_plan_id = c.user_plan_id
+SET u.collected = c.total_contributions;
+
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'vendor/autoload.php'; // if using Composer
+
+// After inserting into notifications
+$recipientEmail = "user10@example.com";  // user’s email from your users table
+$subject = "Contribution Notification";
+$body    = "Agent $agent_id successfully collected $amount from you (Contribution ID $target_id).";
+
+$mail = new PHPMailer(true);
+
+try {
+    //Server settings
+    $mail->isSMTP();
+    $mail->Host       = 'smtp.yourmailserver.com'; // e.g., smtp.gmail.com
+    $mail->SMTPAuth   = true;
+    $mail->Username   = 'your_email@example.com';
+    $mail->Password   = 'your_password';
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port       = 587;
+
+    //Recipients
+    $mail->setFrom('your_email@example.com', 'SavingsHub Notifications');
+    $mail->addAddress($recipientEmail);
+
+    //Content
+    $mail->isHTML(true);
+    $mail->Subject = $subject;
+    $mail->Body    = $body;
+
+    $mail->send();
+    echo "Email notification sent successfully!";
+} catch (Exception $e) {
+    echo "Email could not be sent. Error: {$mail->ErrorInfo}";
+}
+
+
+ else {
+    try {
+
+        $stmt = $conn->prepare(
+            "INSERT INTO contributions (user_id, user_plan_id, user_name, amount, date, agent_id, plan_type) 
+             VALUES (?, ?, ?, ?, ?, ?, ?)"
+        );
+
+        $stmt->bind_param("iisisis", $user_id, $userplansid, $user, $amount, $date, $agent_id, $plan_type);
+
+        if ($stmt->execute()) {
+            // $response = [
+            //     "status"  => "success",
+            //     "message" => "Contribution Successfully Recorded",
+            //     "code"    => 200
+            // ];
+
+            // Update collected_amount for all users/plans
+            $stmtSum = $conn->prepare("
+        UPDATE userplans u
+JOIN (
+    SELECT user_plan_id, SUM(amount) AS total_contributions
+    FROM contributions
+    GROUP BY user_plan_id
+) c ON u.user_plan_id = c.user_plan_id
+SET u.collected = c.total_contributions;
+    ");
+            $stmtSum->execute();
+            $stmtSum->close();
+            $stmtStatus = $conn->prepare("
+        UPDATE userplans
+        SET status = 'completed'
+        WHERE collected >= target_amount
+    ");
+            $stmtStatus->execute();
+            $stmtStatus->close();
+
+            // ✅ Update status dynamically based on collected vs target_amount
+            $stmtStatus = $conn->prepare("
+    UPDATE userplans
+    SET status = CASE 
+        WHEN collected >= target_amount THEN 'completed'
+        ELSE 'in progress'
+    END
+");
+            $stmtStatus->execute();
+            $stmtStatus->close();
+            $stmtNotify = $conn->prepare("INSERT INTO notifications (actor_type, actor_id, action,	target_table,target_id, message) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmtNotify->bind_param('sissis', $actor_type, $agent_id, $action_type, $target_tb, $user_id, $message);
+            $stmtNotify->execute();
+            $stmtgetEmail = $conn->prepare("SELECT `email` FROM users WHERE user_id = ?");
+            $stmtgetEmail->bind_param("i", $user_id);
+            $stmtgetEmail->execute();
+            $recipientEmail = $stmtgetEmail->get_result();
+            if ($recipientEmail) {
+
+                $mail = new PHPMailer(true);
+                $subject = "Contribution Notification";
+                $body = "₦$amount has been successfully credited to your SavingHub account.";
+                try {
+                    //Server settings
+                    $mail->isSMTP();
+                    $mail->Host       = 'smtp.gmail.com';
+                    $mail->SMTPAuth   = true;
+                    $mail->Username   = 'savinghub23@gmail.com';
+                    $mail->Password   = 'dcfiegsyrrcvzvue';
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                    $mail->Port       = 465;
+
+                    //Recipients
+                    $mail->setFrom('savinghub23@gmail.com', 'SavingsHub Notifications');
+                    $mail->addAddress($recipientEmail);
+
+                    //Content
+                    $mail->isHTML(true);
+                    $mail->Subject = $subject;
+                    $mail->Body    = $body;
+
+                    $mail->send();
+                    echo json_encode([
+                        "status"  => "success",
+                        "message" => "Contribution Successfully Recorded & Email Sent",
+                        "code"    => 200
+                    ]);
+                } catch (Exception $e) {
+                    echo json_encode([
+                        "status"  => "error",
+                        "message" => "Email could not be sent. Error: {$mail->ErrorInfo}",
+                        "code"    => 500
+                    ]);
+                }
+            }
+        } else {
+            $response = [
+                "status"  => "error",
+                "message" => "Database insert failed: " . $stmt->error,
+                "code"    => 500
+            ];
+        }
+
+        $stmt->close();
+    } catch (\Throwable $th) {
+        $response = [
+            "status"  => "error",
+            "message" => "Server error: " . $th->getMessage(),
+            "code"    => 500
+        ];
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- app password -->
+dcfi egsy rrcv zvue
+
+
