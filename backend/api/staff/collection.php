@@ -23,7 +23,7 @@ $response = [];
 $actor_type = "staff";
 $target_tb = "contributions";
 $action_type = "collected contribution";
-$message = "Agent $agent_id Successfully Collected $amount from $user";
+$message = "Agent $agent_id Successfully Collected ₦$amount from $user";
 
 $sqlUser_id = "SELECT `user_id`,`user_plan_id`, `user_name`, `plan_type`,`contribution_per_cycle` FROM `userplans` WHERE `agent_id` = ?";
 

@@ -131,20 +131,228 @@ cursor: pointer;
 display: none;
 }
 
-/* .nav a{
-display: flex;
-justify-content: left;
-align-items: center;
-
-} */
  .icon svg {
             width: 25px;
             padding: 0;
             margin: 0;
         }
 
+/* settings styles */
+.agent-profile-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
 
+    .agent-profile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #e5e5e5;
+    }
 
+    .agent-profile-user-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .agent-profile-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #e5e5e5;
+    }
+
+    .agent-profile-user-details h1 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+
+    .agent-profile-user-details p {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .agent-profile-edit-btn {
+      background-color: #2563eb;
+      color: #ffffff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .agent-profile-edit-btn:hover {
+      background-color: #1d4ed8;
+    }
+
+    .agent-profile-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .agent-profile-form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .agent-profile-form-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .agent-profile-form-input,
+    .agent-profile-form-select {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 14px;
+      border: 1px solid #d4d4d4;
+      border-radius: 6px;
+      background-color: #ffffff;
+      color: #1a1a1a;
+      transition: border-color 0.2s;
+    }
+
+    .agent-profile-form-input:focus,
+    .agent-profile-form-select:focus {
+      outline: none;
+      border-color: #2563eb;
+    }
+
+    .agent-profile-form-input::placeholder {
+      color: #a3a3a3;
+    }
+
+    .agent-profile-form-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    .agent-profile-email-section {
+      margin-bottom: 24px;
+    }
+
+    .agent-profile-section-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .agent-profile-email-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .agent-profile-email-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background-color: #f9f9f9;
+      border-radius: 6px;
+    }
+
+    .agent-profile-email-icon {
+      width: 20px;
+      height: 20px;
+      color: #666;
+    }
+
+    .agent-profile-email-text {
+      flex: 1;
+      font-size: 14px;
+      color: #1a1a1a;
+    }
+
+    .agent-profile-email-tag {
+      padding: 4px 8px;
+      background-color: #e5e5e5;
+      color: #666;
+      font-size: 12px;
+      border-radius: 4px;
+    }
+
+    .agent-profile-link-btn {
+      display: inline-block;
+      color: #5b709e;
+      background-color: lab(95.42% -0.12 -1.68);
+      font-size: 13px;
+      text-decoration: none;
+      font-weight: 500;
+      margin-top: 8px;
+      transition: color 0.2s;
+      text-align: left;
+      padding: 4px 10px 4px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .agent-profile-link-btn:hover {
+      color: #1d4ed8;
+    }
+
+    @media (max-width: 768px) {
+      .agent-profile-container {
+        padding: 24px;
+      }
+
+      .agent-profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .agent-profile-form-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+
+      .agent-profile-container {
+        padding: 20px;
+        border-radius: 8px;
+      }
+
+      .agent-profile-avatar {
+        width: 50px;
+        height: 50px;
+      }
+
+      .agent-profile-user-details h1 {
+        font-size: 16px;
+      }
+
+      .agent-profile-edit-btn {
+        width: 100%;
+      }
+    }
 
 
 
@@ -243,8 +451,9 @@ align-items: center;
 
     /* Table */
     .notify-table {
-        width: 100%;
+        min-width: 100%;
         border-collapse: collapse;
+        overflow-x: scroll;
     }
 
     .notify-table th,
@@ -266,6 +475,7 @@ align-items: center;
         .notify-table td:nth-child(1) {
             display: none; /* hide ID column on small screens */
         }
+   
     }
 
     /* Pagination */
@@ -289,10 +499,32 @@ align-items: center;
         color: #fff;
     }
 
+.new-password,.new-email{
+display: none;
 
+}
 
+.new-email.displayinput {
+  display: block;
+  transition: 2s ease;
+  animation: disply 1.5s ease-in forwards   ;
+}
 
+.new-password.displayinput {
+  display: block;
+  transition: 2s ease;
+  animation: disply 1.5s ease-in forwards   ;
+}
+@keyframes disply {
+    0%{
+        opacity: 0;
+    }
+  
+100%{
+    opacity: 1;
+}
 
+}
 
         .nav-item {
             padding: 0.875rem 1.5rem;

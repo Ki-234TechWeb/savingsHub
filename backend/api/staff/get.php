@@ -8,6 +8,7 @@
   $users = [];
   $staff = [];
   $userPlans = [];
+  $notifications = [];
   $collections = [];
   $todaysCollections = [];
   $monthlyCollection = [];
@@ -194,11 +195,24 @@ WHERE c.agent_id = ?
     while ($row = $result->fetch_assoc()) {
       $monthlyCollection[] = $row;
     }
+  } elseif ($type === "notifications") {
+    $stmt = $conn->prepare("SELECT `message`, `created_at` 
+FROM notifications 
+WHERE actor_id = ? 
+ORDER BY `created_at` DESC;
+");
+    $agent_id = 5;
+    $stmt->bind_param("i", $agent_id);
+    $stmt->execute();
+    $notifications = [];
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+      $notifications[] = $row;
+    }
   } elseif ($type === "staff") {
     $stmt = $conn->prepare("SELECT agent_id, name FROM agents");
     $stmt->execute();
     $staff = [];
-    // Get result set
     $result = $stmt->get_result();
     while ($row = $result->fetch_assoc()) {
       $staff[] = $row;
@@ -218,7 +232,8 @@ WHERE c.agent_id = ?
     "todaysCollections" => $todaysCollections,
     "weeklyCollections" => $weeklyCollections,
     "monthlyCollection" => $monthlyCollection,
-    "todaysPendingCollections" => $todaysPendingCollections
+    "todaysPendingCollections" => $todaysPendingCollections,
+    "notifications" => $notifications
   ]);
 
   ?>  
