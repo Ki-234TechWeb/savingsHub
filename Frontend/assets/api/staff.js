@@ -6,6 +6,7 @@ let monthlyCollection = [];
 let collectionsSummary = [];
 let notifications = [];
 let staff = [];
+let singleStaff = [];
 let userplans = [];
 async function fetchUsers() {
   try {
@@ -36,6 +37,146 @@ async function fetchUsers() {
   }
 }
 fetchUsers();
+
+
+// Sending Data
+document.addEventListener("click", async function(e) {
+  if (e.target.classList.contains("updateUser")) {
+  const updateModal = document.getElementById("updateUser");
+  if (!updateModal) return;
+  let btn = e.target.closest(".updateUser");
+ let user_ids = btn.getAttribute("data-user-id");
+  console.log(user_ids);
+  updateModal.style.display = "flex"; 
+
+ try {
+    const res = await fetch(`/savinghub/backend/api/staff/get.php?type=singleUser&id=${user_ids}`);
+    const dataUser= await res.json();
+    let data = dataUser.userUpdate || [];
+    let user = data[0]; // grab the first user object
+  console.log(data)
+    console.log(user.name);
+      
+      document.querySelector(".nameUpdate").value = user.name || "";
+    document.querySelector(".emailUpdate").value = user.email || ""; // only works if backend sends "email"
+      updateModal.querySelector(".phoneUpdate").value = user.phone || "";
+      updateModal.querySelector(".addressUpdate").value = user.address || "";
+      updateModal.querySelector(".nextofKinUpdate").value = user.nextofkin || "";
+        user.next_of_kin || "";
+       document.querySelector(".staffAgent").value = user.agent_id || "";
+       document.querySelector(".Usersid").value = user.user_id || "";
+  } catch (err) {
+    console.error("Error fetching user:", err);
+  }
+  }
+});
+
+// document.addEventListener("click",  function(e) {
+//   if (e.target.classList.contains("collectionEdit")) {
+//     const editCollection = document.getElementById("recordCollectionModalEdit");
+//     if (!editCollection) return;
+//     editCollection.style.display = "flex"; 
+//     let collect_id = e.target.getAttribute("data-collect-id"); 
+//     let collectUser_id = e.target.getAttribute("data-collect-userid");
+//     let collectUserName = e.target.getAttribute("data-collect-username");
+//     let collectUserDate = e.target.getAttribute("data-collect-userdate");
+//     let collectUserAmount = e.target.getAttribute("data-collect-useramount");
+//     console.log("Clicked collect_id:", collect_id); 
+//     console.log("Clicked collectUser_id:", collectUser_id);
+//     let select = editCollection.querySelector(".usersplanEdit");
+//     console.log(select);
+//     let option = select.querySelector(".optionEdit");
+//      let collectOption = option.value ;
+//      option.textContent = `${collectUserName}`;
+//        console.log(option);
+        
+//       let selectOption = option.textContent;
+//     let amountEdit =  document.querySelector(".amountEdit").value ;
+//      let assignAmount = collectUserAmount;
+//      let dateEdit = document.querySelector(".dateEdit").value ;
+//       let assignDate = collectUserDate;
+
+
+//       document.addEventListener("click", async function(sub) {
+//   if (sub.target.classList.contains("recordCollectionEdit")) {
+//        if (!recordCollectionEdit) return;
+//         // Validation
+//   if (!assignAmount || !assignDate || !collectOption ) {
+//     showNotification("Required fields cannot be empty", "error");
+   
+//     return;
+//   }
+
+//      const collectForm ={
+//     selectOption,amountEdit,dateEdit,collect_id
+//      }
+
+// try {
+//       const res = await fetch(`/savinghub/backend/api/staff/updateCollection.php`, {
+//         method: "PUT",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(collectForm)
+//       });
+
+//       const dataEdit = await res.json();
+//       console.log("Update response:", dataEdit);
+
+//       // Optionally populate modal fields with returned data
+//       // e.g., editCollection.querySelector("#fieldName").value = dataEdit.someField;
+
+//     } catch (err) {
+//       console.error("Error fetching user:", err);
+//     }
+//   }
+// });
+
+    
+//   }
+// });
+
+
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("closeUpdate")) {
+  const updateModal = document.getElementById("updateUser");
+  if (!updateModal) return;
+  updateModal.style.display = "none"; 
+
+
+  }
+});
+
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("update_content")) {
+  const update_content = document.getElementById("updateUser");
+  if (!update_content) return;
+  update_content.style.display = "none"; 
+
+
+  }
+});
+
+
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("closeEditColl")) {
+  const update_record = document.getElementById("recordCollectionModalEdit");
+  if (!update_record) return;
+  update_record.style.display = "none"; 
+
+
+  }
+});
+
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("recordCollect")) {
+  const update_record = document.getElementById("recordCollectionModalEdit");
+  if (!update_record) return;
+  update_record.style.display = "none"; 
+
+
+  }
+});
+
+
 
 async function fetchUserPlans() {
   try {
@@ -142,9 +283,9 @@ function renderPortfolioUsers(portfolioUsers = []) {
           </span>
         </td>
         <td>
-          <button class="button btn-sm btn-outline" onclick="viewUserDetails(${
-            user.user_id
-          })">View</button>
+          <button class="button btn-sm btn-outline updateUser" data-user-id="${user.user_id}"> View user
+           </button>
+
         </td>
       </tr>
     `;
@@ -223,7 +364,6 @@ async function renderCollectionsHistory() {
       monthly_total.toLocaleString("en-US");
     document.querySelector(".pending_collection").innerHTML = pendingCollect;
 
-    console.log(todaysPendingCollections);
     let filteredCollections = [];
 
     if (filterValue === "Recent") {
@@ -263,9 +403,7 @@ async function renderCollectionsHistory() {
               </span>
             </td>
             <td>
-              <button class="button btn-sm btn-outline" onclick="editCollection(${
-                collection.id
-              })">Edit</button>
+              <button class="button btn-sm btn-outline collectionEdit " data-collect-id= "${collection.contribution_id}" data-collect-userid= "${collection.user_id}" data-collect-agentid= "${collection.agent_id}" data-collect-username= "${collection.name}" data-collect-userdate= "${collection.date}" data-collect-useramount= "${collection.amount}">Edit</button>
             </td>
           </tr>
         `;
@@ -277,7 +415,9 @@ async function renderCollectionsHistory() {
   }
 }
 
-renderCollectionsHistory();
+renderCollectionsHistory()
+
+
 async function fetchStaff() {
   try {
     const BASE_URL = window.location.origin;
@@ -289,6 +429,7 @@ async function fetchStaff() {
     }
     let data = await response.json();
     staff = data.staff || [];
+     console.log(staff.name)
     let select = document.querySelector(".agent");
     staff.forEach((staff) => {
       let option = document.createElement("option");
@@ -302,6 +443,71 @@ async function fetchStaff() {
   }
 }
 fetchStaff();
+
+// async function fetchStaffSettings() {
+//   try {
+//     const BASE_URL = window.location.origin;
+//     const response = await fetch(
+//       `${BASE_URL}/savinghub/backend/api/staff/get.php?type=singleStaff`
+//     );
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! Status: ${response.status}`);
+//     }
+//      let data = await response.json();
+//     singleStaff = data.singleStaff || [];
+//     let staff1 = singleStaff;
+//     console.log(staff1)
+//     let staffName = document.querySelectorAll(".staffName");
+//     staffName.forEach(item => {
+//       item.textContent = staff1.name;
+//     });
+//     let staffPass = document.querySelector(".staffPass");
+//     let staffMail = document.querySelector(".staffMail");
+//     let staffId = document.querySelector(".staffId");
+//     staffPass.value= staff1.password; 
+//     staffId.innerHTML = staff1.agent_id;
+//   } catch (error) {
+//     console.error("Error fetching users:", error);
+//   }
+// }
+
+async function fetchStaffSettings() {
+  try {
+    const BASE_URL = window.location.origin;
+    const response = await fetch(
+      `${BASE_URL}/savinghub/backend/api/staff/get.php?type=singleStaff`
+    );
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+    const data = await response.json();
+    const staff1 = (data.singleStaff && data.singleStaff[0]) || {};
+
+    // update DOM
+    document.querySelectorAll(".staffName").forEach(item => {
+      item.textContent = staff1.name;
+      item.value = staff1.name;
+    });
+
+    // const staffPass = document.querySelector(".staffPass");
+    const staffMail = document.querySelector(".staffMail");
+     const staffNewMail = document.querySelector(".staffNewMail");
+    const staffId = document.querySelector(".staffId");
+    const staffPhone = document.querySelector(".staffPhone")
+    const staffAddress = document.querySelector(".staffAddress")
+    // if (staffPass) staffPass.value = staff1.password;
+    if (staffMail) staffMail.innerHTML = staff1.email;
+     if (staffNewMail) staffNewMail.value = staff1.email;
+    if (staffId) staffId.innerHTML = staff1.agent_id;
+    if (staffPhone) staffPhone.value = staff1.phone;
+    if (staffAddress) staffAddress.value = staff1.address;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
+}
+
+fetchStaffSettings();
+
+
 // Render Active Plans Table
 function renderActivePlans(userplans = []) {
   const tbody = document.getElementById("activePlansBody");
@@ -350,12 +556,67 @@ function renderActivePlans(userplans = []) {
           <td><span style="${statusClass}">${plan.status}</span></td>
           <td>${plan.start_date}</td>
           <td>${plan.duration_months} month(s)</td>
+          <td> <button class="button btn-sm btn-destructive2 closePlan" data-plan-id="${plan.user_plan_id}" data-agent-id="${plan.agent_id}" data-user-name="${plan.user_name}"> Close Plan
+           </button> </td>
           
         </tr>
       `;
     })
     .join("");
 }
+
+
+document.addEventListener("click", async function(e) {
+  if (e.target.classList.contains("closePlan")) {
+    let btn = e.target.closest(".closePlan");
+    const deleteId = btn.getAttribute("data-plan-id");
+    const deleteAgentId = btn.getAttribute("data-agent-id");
+    const deleteUserName = btn.getAttribute("data-user-name");
+
+    // Confirmation dialog
+    const confirmed = confirm(
+      `Are you sure you want to close/delete the plan for ${deleteUserName}?`
+    );
+
+    if (!confirmed) {
+      return; // stop if user cancels
+    }
+
+    const deleteFormData = {
+      deleteId,
+      deleteAgentId,
+      deleteUserName
+    };
+
+    try {
+      const BASE_URL = window.location.origin;
+
+      const res = await fetch(
+        `${BASE_URL}/savinghub/backend/api/staff/delete.php`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(deleteFormData)
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.status === "success") {
+        showNotification(data.message, "success");
+
+        setTimeout(() => {
+          window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/staff.html`;
+        }, 1500);
+      } else {
+        showNotification(data.message, "error");
+      }
+    } catch (error) {
+      showNotification("Server error: " + error.message, "error");
+    }
+  }
+});
+
 
 async function fetchNotifyData() {
   try {
@@ -373,11 +634,15 @@ async function fetchNotifyData() {
     console.error("Error fetching users:", error);
   }
 }
-
+const notify2 = document.querySelector(".showNotify")
+    notify2.addEventListener('click',function(){
 fetchNotifyData();
+    })
+
+
 let currentPage = 1;
 const rowsPerPage = 10;
-let filteredD = []; // global notifications array
+let filteredD = []; 
 
 async function renderTable(notifications ) {
   const body = document.getElementById("notify-body");

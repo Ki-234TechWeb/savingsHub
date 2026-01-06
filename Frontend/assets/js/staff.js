@@ -108,25 +108,6 @@ function refreshPortfolio() {
   
 }
 
-// function handleCreateUser(event) {
-//   event.preventDefault();
-//   showNotification("New user created successfully", "success");
-//   event.target.reset();
-// }
-
-// function handleRecordCollection(event) {
-//   event.preventDefault();
-//   showNotification("Collection recorded successfully", "success");
-//   closeModal("recordCollectionModal");
-//   event.target.reset();
-// }
-
-// function handleSetupPlan(event) {
-//   event.preventDefault();
-//   showNotification("Plan setup successfully for user", "success");
-//   closeModal("setupPlanModal");
-//   event.target.reset();
-// }
 
 // Notification System
 function showNotification(message, type = "info") {

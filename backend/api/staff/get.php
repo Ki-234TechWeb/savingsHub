@@ -2,11 +2,13 @@
   error_reporting(E_ALL);
   ini_set('display_errors', 1);
   header('Content-Type: application/json');
-  include './../config/db.php';
+  include './../config/env.php';
 
   $type = $_GET['type'] ?? 'all';
   $users = [];
   $staff = [];
+  $singleStaff = [];
+  $userUpdate = [];
   $userPlans = [];
   $notifications = [];
   $collections = [];
@@ -43,6 +45,39 @@ WHERE u.agent_id = ?;
     while ($row = $result->fetch_assoc()) {
       $users[] = $row;
     }
+  } elseif ($type === "singleUser") {
+    // Get user_id from query string
+    $user_id = $_GET['id'] ?? null;
+
+    if ($user_id) {
+      $sql = "SELECT 
+        u.user_id,
+        u.name,
+        u.phone,
+          u.email,
+        u.agent_id,
+        u.address,
+        u.nextofkin
+    FROM users u
+    WHERE u.user_id = ?";
+
+      $stmt = $conn->prepare($sql);
+      if (!$stmt) {
+        echo json_encode([
+          "status" => "error",
+          "message" => "Prepare failed: " . $conn->error
+        ]);
+        exit;
+      }
+
+      $stmt->bind_param("i", $user_id);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      $userUpdate = [];
+      if ($row = $result->fetch_assoc()) {
+        $userUpdate[] = $row;
+      }
+    }
   } elseif ($type === "userPlans") {
     $agent_id = 5;
     $sql = "SELECT `user_id`,`user_plan_id`,`agent_id`, `user_name`, `plan_type`,  `target_amount`,`duration_months`,  `contribution_per_cycle`,`collected`,`status`,`start_date` FROM `userplans` WHERE `agent_id` = ?";
@@ -64,7 +99,10 @@ WHERE u.agent_id = ?;
     c.amount,
     c.date,
     c.plan_type,
+    c.contribution_id,
+    c.agent_id,
     u.name,
+    u.user_id,
     u.status
 FROM contributions c
 JOIN users u ON c.user_id = u.user_id
@@ -126,7 +164,10 @@ WHERE c.agent_id = ? ";
     c.amount,
     c.date,
     c.plan_type,
+      c.contribution_id,
+      c.agent_id,
     u.name,
+    u.user_id,
     u.status
 FROM contributions c
 JOIN users u ON c.user_id = u.user_id
@@ -150,7 +191,10 @@ WHERE c.agent_id = ?
     c.amount,
     c.date,
     c.plan_type,
+      c.contribution_id,
+      c.agent_id,
     u.name,
+    u.user_id,
     u.status
 FROM contributions c
 JOIN users u ON c.user_id = u.user_id
@@ -174,7 +218,10 @@ WHERE c.agent_id = ?
     c.amount,
     c.date,
     c.plan_type,
+      c.contribution_id,
+      c.agent_id,
     u.name,
+    u.user_id,
     u.status
 FROM contributions c
 JOIN users u ON c.user_id = u.user_id
@@ -217,8 +264,17 @@ ORDER BY `created_at` DESC;
     while ($row = $result->fetch_assoc()) {
       $staff[] = $row;
     }
+  } elseif ($type === "singleStaff") {
+    $stmt = $conn->prepare("SELECT agent_id, name, phone, email, created_at, password, address FROM agents WHERE agent_id =?");
+    $agent_id = 5;
+    $stmt->bind_param("i", $agent_id);
+    $stmt->execute();
+    $singleStaff = [];
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+      $singleStaff[] = $row;
+    }
   }
-
 
 
 
@@ -228,12 +284,14 @@ ORDER BY `created_at` DESC;
     "collections" => $collections,
     "collectionsSummary" => $collectionsSummary,
     "staff" => $staff,
+    "singleStaff" => $singleStaff,
     "userPlans" => $userPlans,
     "todaysCollections" => $todaysCollections,
     "weeklyCollections" => $weeklyCollections,
     "monthlyCollection" => $monthlyCollection,
     "todaysPendingCollections" => $todaysPendingCollections,
-    "notifications" => $notifications
+    "notifications" => $notifications,
+    "userUpdate" => $userUpdate
   ]);
 
   ?>  

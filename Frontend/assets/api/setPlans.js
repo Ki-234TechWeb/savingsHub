@@ -1,9 +1,11 @@
 const planForm = document.getElementById('plans');
-
+ const setplans = document.querySelector('.setplan')
 planForm.addEventListener("submit", handleSetupPlan );
-
+const spinnerSetplan = document.getElementById('loadingSpinnerSetplan');
 async function handleSetupPlan(event) {
   event.preventDefault();
+  spinnerSetplan.style.display = "block";
+setplans.style.display = "none";
 let select = document.querySelector(".users");
   let user = select.value.trim();
   let agentId = select.options[select.selectedIndex].dataset.agentId;
@@ -13,13 +15,13 @@ let select = document.querySelector(".users");
   let duration = document.querySelector(".duration").value.trim();
   let contribution = document.querySelector(".contribution").value.trim();
   let Commision = document.querySelector(".Commision").value.trim();
-  
   // Validation
   if (!user || !targetAmount || !duration || !contribution ) {
     showNotification("Required fields cannot be empty", "error");
+    restoreSetplanButton()
     return; // stop submission
   }
-  // Build formData object
+
  const formData = {
   user: user,
   userId: userId,
@@ -44,21 +46,29 @@ let select = document.querySelector(".users");
       showNotification(data.message, "success");
      setTimeout(() => {
     window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/staff.html`;
-  }, 3000); // 3000 ms = 3 seconds
+  }, 2000); 
     } else {
       showNotification(data.message, "error");
+      restoreSetplanButton()
     }
   } catch (error) {
     showNotification("Server error: " + error.message, "error");
+    restoreSetplanButton()
   }
 }
 
-let setplans = document.querySelector('.setplan')
+
 setplans.addEventListener("click", function(event){
- event.preventDefault(); // ✅ stop page reload
   handleSetupPlan(event);
-  setplans.style.display= "none";
-     setTimeout(() => {
-     setplans.style.display= "block"
-  }, 3000); 
+ 
 })
+
+
+function restoreSetplanButton() {
+ spinnerSetplan.style.display = "none";
+  setplans.style.display = "block";
+
+}
+
+
+

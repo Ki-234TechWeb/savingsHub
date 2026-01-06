@@ -12,4 +12,8 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Mail 
+$mailUser = 'savinghub23@gmail.com'; 
+$mailPass = 'dcfiegsyrrcvzvue';
+
 ?>

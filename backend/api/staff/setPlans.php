@@ -2,7 +2,11 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 header('Content-Type: application/json');
-include './../config/db.php';
+include './../config/env.php';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+require __DIR__ . '/../../../vendor/autoload.php';
+
 
 $input = file_get_contents("php://input");
 $data = json_decode($input, true);
@@ -44,10 +48,68 @@ if (empty($user) || empty($planType) || empty($duration) || empty($Commision) ||
                 "message" => "Successfully set plans for $user",
                 "code"    => 200
             ];
-             // notification Insert
+            // notification Insert
             $stmtNotify = $conn->prepare("INSERT INTO notifications (actor_type, actor_id, action,	target_table,target_id, message) VALUES (?, ?, ?, ?, ?, ?)");
-$stmtNotify->bind_param('sissis',$actor_type, $agentId, $action_type,$target_tb,$userId, $message);
-$stmtNotify->execute();
+            $stmtNotify->bind_param('sissis', $actor_type, $agentId, $action_type, $target_tb, $userId, $message);
+            $stmtNotify->execute();
+
+            // Get user email
+            $stmtgetEmail = $conn->prepare("SELECT `email` FROM users WHERE user_id = ?");
+            $stmtgetEmail->bind_param("s", $userId);
+            $stmtgetEmail->execute();
+            $result = $stmtgetEmail->get_result();
+
+            if ($row = $result->fetch_assoc()) {
+                $recipientEmail = trim($row['email']);
+                if ($recipientEmail) {
+                    $mail = new PHPMailer(true);
+                    $subject = "SavingHub Plan Setup Successful ";
+
+                    $body = "
+    <p>Hi $user 👋,</p>
+    <p>✅ Your SavingHub plan has been set up successfully.</p>
+
+    <h3>📋 Plan Details</h3>
+    <p>
+        🏦 <strong>Plan Type:</strong> $planType <br>
+        🎯 <strong>Target Amount:</strong> ₦$targetAmount <br>
+        ⏳ <strong>Duration:</strong> $duration Month(s) <br>
+        💰 <strong>Contribution per Cycle:</strong> ₦$contribution
+    </p>
+
+    <p>🎉 Thank you for choosing SavingHub — we’re excited to help you reach your savings goals!</p>
+    <p>— The SavingHub Team</p>
+";
+
+
+
+                    try {
+                        //Server settings
+                        $mail->isSMTP();
+                        $mail->Host       = 'smtp.gmail.com';
+                        $mail->SMTPAuth   = true;
+                       $mail->Username   = $mailUser;
+                        $mail->Password   = $mailPass;
+                        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                        $mail->Port       = 465;
+
+                        //Recipients
+                        $mail->setFrom('savinghub23@gmail.com', 'SavingHub');
+                        $mail->addAddress($recipientEmail);
+
+                        //Content
+                        $mail->isHTML(true);
+                        $mail->Subject = $subject;
+                        $mail->Body    = $body;
+
+                        $mail->send();
+                    } catch (Exception $e) {
+                        // Email failed, but contribution still recorded
+                    }
+                }
+            }
+        //  end of email notification
+
         } else {
             $response = [
                 "status"  => "error",
