@@ -82,6 +82,7 @@ if (empty($name) || empty($phone) || empty($address) || empty($password) || empt
                 "message" => "Successfully created account for $name",
                 "code"    => 200
             ];
+<<<<<<< HEAD
        
           // Clean name
 $nameClean = strtolower($name);
@@ -119,6 +120,11 @@ $update->execute();
             // notification Insert
             $stmtNotify = $conn->prepare("INSERT INTO notifications (actor_type, actor_id, action,	target_table,target_id, message) VALUES (?, ?, ?, ?, ?, ?)");
             $stmtNotify->bind_param('ssssss', $actor_type, $agent_id, $action_type, $target_tb, $user_id, $message);
+=======
+            // notification Insert
+            $stmtNotify = $conn->prepare("INSERT INTO notifications (actor_type, actor_id, action,	target_table,target_id, message) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmtNotify->bind_param('sissis', $actor_type, $agent_id, $action_type, $target_tb, $user_id, $message);
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
             $stmtNotify->execute();
 
                         // Get user email

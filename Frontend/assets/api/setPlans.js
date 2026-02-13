@@ -1,10 +1,17 @@
 const planForm = document.getElementById('plans');
  const setplans = document.querySelector('.setplan')
 planForm.addEventListener("submit", handleSetupPlan );
+<<<<<<< HEAD
 const spinnerSetplan = document.querySelector('.pageloader');
 async function handleSetupPlan(event) {
   event.preventDefault();
   
+=======
+const spinnerSetplan = document.getElementById('loadingSpinnerSetplan');
+async function handleSetupPlan(event) {
+  event.preventDefault();
+  spinnerSetplan.style.display = "block";
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 setplans.style.display = "none";
 let select = document.querySelector(".users");
   let user = select.value.trim();

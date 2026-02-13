@@ -1,7 +1,10 @@
 const form = document.getElementById("form");
 const createuser = document.querySelector(".create-user");
 const spinnerCreate = document.getElementById('loadingSpinnerCreate');
+<<<<<<< HEAD
 const createpage = document.querySelector('.pageloader');
+=======
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 form.addEventListener("submit", handleCreateUser);
 
 async function handleCreateUser(event) {
@@ -64,10 +67,16 @@ async function handleCreateUser(event) {
 
     if (data.status === "success") {
       showNotification(data.message, "success");
+<<<<<<< HEAD
       createpage.style.display = "flex";
       setTimeout(() => {
         window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/staff.html`;
       }, 800); 
+=======
+      setTimeout(() => {
+        window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/staff.html`;
+      }, 1500); // 3000 ms = 3 seconds
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
     } else {
       showNotification(data.message, "error");
       restoreCreateButton()
@@ -88,7 +97,11 @@ createuser.addEventListener("click", function (event) {
 function restoreCreateButton() {
  spinnerCreate.style.display = "none";
   createuser.style.display = "block";
+<<<<<<< HEAD
   createpage.style.display = "none";
+=======
+
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 }
 
 

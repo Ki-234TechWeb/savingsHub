@@ -1,7 +1,10 @@
 const formSetting = document.getElementById("profileSett");
 formSetting.addEventListener("submit", handleUpdateSettings);
 const spinnerUpdate = document.getElementById('loadingSpinnerProfile');
+<<<<<<< HEAD
 const profpage = document.querySelector('.pageloader');
+=======
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 const updateProfileBtn = document.querySelector(".update");
 async function handleUpdateSettings(event) {
   event.preventDefault();
@@ -28,7 +31,11 @@ console.log(updateProfileBtn)
     address,
     StaffId
   };
+<<<<<<< HEAD
    profpage.style.display = "flex";
+=======
+
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
   try {
     const BASE_URL = window.location.origin;
 
@@ -45,10 +52,17 @@ console.log(updateProfileBtn)
 
     if (data.status === "success") {
       showNotification(data.message, "success");
+<<<<<<< HEAD
         profpage.style.display = "flex";
       setTimeout(() => {
         window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/staff.html`;
       }, 1000);
+=======
+
+      setTimeout(() => {
+        window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/staff.html`;
+      }, 3000);
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
     } else {
       showNotification(data.message, "error");
       restoreButton()
@@ -63,6 +77,10 @@ console.log(updateProfileBtn)
 function restoreButton() {
   updateProfileBtn.style.display = "block";
   spinnerUpdate.style.display = "none";
+<<<<<<< HEAD
   profpage.style.display = "none";
+=======
+  // changePassBtn.style.display = "block";
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 }
 

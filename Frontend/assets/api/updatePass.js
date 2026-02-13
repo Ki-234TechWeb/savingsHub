@@ -1,6 +1,9 @@
 
 const spinnerUpdatePass = document.getElementById('loadingSpinnerPass');
+<<<<<<< HEAD
 const myPage = document.querySelector('.pageloader');
+=======
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 const changePassBtn = document.querySelector(".changePassword")
 const changePass = document.getElementById("changePass");
 
@@ -10,7 +13,10 @@ async function changePassword(event) {
   event.preventDefault();
   changePassBtn.style.display = "none";
     spinnerUpdatePass.style.display = "block";
+<<<<<<< HEAD
    
+=======
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
   // Get values from form fields
   let currentPassword = document.querySelector(".staffPass").value.trim();
   let newPassword = document.querySelector(".staffNewPass").value.trim();
@@ -41,7 +47,12 @@ async function changePassword(event) {
  newPassword : newPassword,
  StaffId: StaffId
   };
+<<<<<<< HEAD
  myPage.style.display = "flex";
+=======
+
+  // ✅ Send request to backend
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
   try {
     const BASE_URL = window.location.origin;
 
@@ -58,10 +69,17 @@ async function changePassword(event) {
 
     if (data.status === "success") {
       showNotification(data.message, "success");
+<<<<<<< HEAD
       myPage.style.display = "flex";
       setTimeout(() => {
         window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/staff.html`;
       }, 800);
+=======
+
+      setTimeout(() => {
+        window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/staff.html`;
+      }, 3000);
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
     } else {
       showNotification(data.message, "error");
       restorePassButton()
@@ -75,7 +93,11 @@ async function changePassword(event) {
 function restorePassButton() {
  spinnerUpdatePass.style.display = "none";
   changePassBtn.style.display = "block";
+<<<<<<< HEAD
    myPage.style.display = "none";
+=======
+
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 }
 
 

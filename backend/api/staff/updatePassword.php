@@ -49,13 +49,21 @@ $newHashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
 // Step 5: Update DB
 $updatePass = $conn->prepare("UPDATE agents SET password = ? WHERE agent_id = ?");
+<<<<<<< HEAD
 $updatePass->bind_param("ss", $newHashedPassword, $agent_id);
+=======
+$updatePass->bind_param("si", $newHashedPassword, $agent_id);
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 
 if ($updatePass->execute()) {
     $response = ["status" => "success", "message" => "Password updated successfully."];
 
 $stmtgetEmail = $conn->prepare("SELECT `email`,`name` FROM agents WHERE agent_id = ?");
+<<<<<<< HEAD
             $stmtgetEmail->bind_param("s", $agent_id);
+=======
+            $stmtgetEmail->bind_param("i", $agent_id);
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
             $stmtgetEmail->execute();
             $result = $stmtgetEmail->get_result();
 

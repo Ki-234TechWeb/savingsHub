@@ -34,7 +34,10 @@ document.addEventListener("click", function(e) {
 });
 const loadingSpinnerEditColl = document.getElementById("loadingSpinnerEditColl");
 const recordCollectionEditBtn = document.querySelector(".recordCollectionEdit");
+<<<<<<< HEAD
 const recordpage = document.querySelector(".pageloader");
+=======
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 // Handle submit when recordCollectionEdit is clicked
 document.addEventListener("click", async function(e) {
   if (e.target.classList.contains("recordCollectionEdit")) {
@@ -59,7 +62,11 @@ document.addEventListener("click", async function(e) {
     }
 
     const collectForm = {  collectOption, amountEdit, dateEdit, collect_id , collect_agentid, collectUserId };
+<<<<<<< HEAD
 recordpage.style.display = "flex";
+=======
+
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
     try {
       const res = await fetch(`/savinghub/backend/api/staff/updateCollection.php`, {
         method: "PUT",

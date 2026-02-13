@@ -123,6 +123,7 @@ document.addEventListener("click", async function(e) {
   if (!updateModal) return;
   let btn = e.target.closest(".updateUser");
  let user_ids = btn.getAttribute("data-user-id");
+<<<<<<< HEAD
   
   updateModal.style.display = "flex"; 
 
@@ -144,6 +145,19 @@ document.addEventListener("click", async function(e) {
     const dataUser= await res.json();
     let data = dataUser.userUpdate || [];
     let user = data[0]; 
+=======
+  console.log(user_ids);
+  updateModal.style.display = "flex"; 
+
+ try {
+    const res = await fetch(`/savinghub/backend/api/staff/get.php?type=singleUser&id=${user_ids}`);
+    const dataUser= await res.json();
+    let data = dataUser.userUpdate || [];
+    let user = data[0]; // grab the first user object
+  console.log(data)
+    console.log(user.name);
+      
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
       document.querySelector(".nameUpdate").value = user.name || "";
     document.querySelector(".emailUpdate").value = user.email || ""; // only works if backend sends "email"
       updateModal.querySelector(".phoneUpdate").value = user.phone || "";
@@ -158,8 +172,74 @@ document.addEventListener("click", async function(e) {
   }
 });
 
+<<<<<<< HEAD
 
 
+=======
+// document.addEventListener("click",  function(e) {
+//   if (e.target.classList.contains("collectionEdit")) {
+//     const editCollection = document.getElementById("recordCollectionModalEdit");
+//     if (!editCollection) return;
+//     editCollection.style.display = "flex"; 
+//     let collect_id = e.target.getAttribute("data-collect-id"); 
+//     let collectUser_id = e.target.getAttribute("data-collect-userid");
+//     let collectUserName = e.target.getAttribute("data-collect-username");
+//     let collectUserDate = e.target.getAttribute("data-collect-userdate");
+//     let collectUserAmount = e.target.getAttribute("data-collect-useramount");
+//     console.log("Clicked collect_id:", collect_id); 
+//     console.log("Clicked collectUser_id:", collectUser_id);
+//     let select = editCollection.querySelector(".usersplanEdit");
+//     console.log(select);
+//     let option = select.querySelector(".optionEdit");
+//      let collectOption = option.value ;
+//      option.textContent = `${collectUserName}`;
+//        console.log(option);
+        
+//       let selectOption = option.textContent;
+//     let amountEdit =  document.querySelector(".amountEdit").value ;
+//      let assignAmount = collectUserAmount;
+//      let dateEdit = document.querySelector(".dateEdit").value ;
+//       let assignDate = collectUserDate;
+
+
+//       document.addEventListener("click", async function(sub) {
+//   if (sub.target.classList.contains("recordCollectionEdit")) {
+//        if (!recordCollectionEdit) return;
+//         // Validation
+//   if (!assignAmount || !assignDate || !collectOption ) {
+//     showNotification("Required fields cannot be empty", "error");
+   
+//     return;
+//   }
+
+//      const collectForm ={
+//     selectOption,amountEdit,dateEdit,collect_id
+//      }
+
+// try {
+//       const res = await fetch(`/savinghub/backend/api/staff/updateCollection.php`, {
+//         method: "PUT",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(collectForm)
+//       });
+
+//       const dataEdit = await res.json();
+//       console.log("Update response:", dataEdit);
+
+//       // Optionally populate modal fields with returned data
+//       // e.g., editCollection.querySelector("#fieldName").value = dataEdit.someField;
+
+//     } catch (err) {
+//       console.error("Error fetching user:", err);
+//     }
+//   }
+// });
+
+    
+//   }
+// });
+
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 
 document.addEventListener("click", function(e) {
   if (e.target.classList.contains("closeUpdate")) {
@@ -528,6 +608,7 @@ async function fetchStaff() {
     }
     let data = await response.json();
     staff = data.staff || [];
+     console.log(staff.name)
     let select = document.querySelector(".agent");
     staff.forEach((staff) => {
       let option = document.createElement("option");
@@ -542,11 +623,41 @@ async function fetchStaff() {
 }
 fetchStaff();
 
+<<<<<<< HEAD
 
+=======
+// async function fetchStaffSettings() {
+//   try {
+//     const BASE_URL = window.location.origin;
+//     const response = await fetch(
+//       `${BASE_URL}/savinghub/backend/api/staff/get.php?type=singleStaff`
+//     );
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! Status: ${response.status}`);
+//     }
+//      let data = await response.json();
+//     singleStaff = data.singleStaff || [];
+//     let staff1 = singleStaff;
+//     console.log(staff1)
+//     let staffName = document.querySelectorAll(".staffName");
+//     staffName.forEach(item => {
+//       item.textContent = staff1.name;
+//     });
+//     let staffPass = document.querySelector(".staffPass");
+//     let staffMail = document.querySelector(".staffMail");
+//     let staffId = document.querySelector(".staffId");
+//     staffPass.value= staff1.password; 
+//     staffId.innerHTML = staff1.agent_id;
+//   } catch (error) {
+//     console.error("Error fetching users:", error);
+//   }
+// }
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 
 async function fetchStaffSettings() {
   try {
     const BASE_URL = window.location.origin;
+<<<<<<< HEAD
         if (!token) {
       window.location.href = "/savinghub/Frontend/dashboards/login.html";
       return;
@@ -561,6 +672,10 @@ async function fetchStaffSettings() {
         }
       }
 
+=======
+    const response = await fetch(
+      `${BASE_URL}/savinghub/backend/api/staff/get.php?type=singleStaff`
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
     );
     if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
@@ -681,10 +796,14 @@ document.addEventListener("click", async function(e) {
 
     try {
       const BASE_URL = window.location.origin;
+<<<<<<< HEAD
           if (!token) {
       window.location.href = "/savinghub/Frontend/dashboards/login.html";
       return;
     }
+=======
+
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
       const res = await fetch(
         `${BASE_URL}/savinghub/backend/api/staff/delete.php`,
         {

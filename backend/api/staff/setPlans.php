@@ -50,7 +50,11 @@ if (empty($user) || empty($planType) || empty($duration) || empty($Commision) ||
             ];
             // notification Insert
             $stmtNotify = $conn->prepare("INSERT INTO notifications (actor_type, actor_id, action,	target_table,target_id, message) VALUES (?, ?, ?, ?, ?, ?)");
+<<<<<<< HEAD
             $stmtNotify->bind_param('ssssss', $actor_type, $agentId, $action_type, $target_tb, $userId, $message);
+=======
+            $stmtNotify->bind_param('sissis', $actor_type, $agentId, $action_type, $target_tb, $userId, $message);
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
             $stmtNotify->execute();
 
             // Get user email

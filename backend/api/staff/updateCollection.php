@@ -42,7 +42,11 @@ if (empty($user)  || empty($amount) || empty($date)) {
     try {
         $stmt = $conn->prepare("UPDATE contributions SET amount = ?, date = ? WHERE contribution_id =? AND agent_id = ? ");
 
+<<<<<<< HEAD
         $stmt->bind_param("isis", $amount, $date, $collect_id, $agent_id);
+=======
+        $stmt->bind_param("isii", $amount, $date, $collect_id, $agent_id);
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 
         if ($stmt->execute()) {
             // Update collected_amount for all users/plans
@@ -58,17 +62,35 @@ if (empty($user)  || empty($amount) || empty($date)) {
             $stmtSum->execute();
             $stmtSum->close();
 
+<<<<<<< HEAD
          
+=======
+            // Update status if collected >= target_amount
+            $stmtStatus = $conn->prepare("
+                UPDATE userplans
+                SET status = 'completed'
+                WHERE collected >= target_amount
+            ");
+            $stmtStatus->execute();
+            $stmtStatus->close();
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 
             // Update status dynamically
             $stmtStatus = $conn->prepare("
                 UPDATE userplans
+<<<<<<< HEAD
 SET status = CASE 
     WHEN collected >= target_amount THEN 'completed'
     ELSE 'in progress'
 END
 WHERE withdrawn_at IS NULL;
 
+=======
+                SET status = CASE 
+                    WHEN collected >= target_amount THEN 'completed'
+                    ELSE 'in progress'
+                END
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
             ");
             $stmtStatus->execute();
             $stmtStatus->close();
@@ -78,7 +100,11 @@ WHERE withdrawn_at IS NULL;
                 INSERT INTO notifications (actor_type, actor_id, action, target_table, message) 
                 VALUES (?, ?, ?, ?, ?)
             ");
+<<<<<<< HEAD
             $stmtNotify->bind_param('sssss', $actor_type, $agent_id, $action_type, $target_tb, $message);
+=======
+            $stmtNotify->bind_param('sisss', $actor_type, $agent_id, $action_type, $target_tb, $message);
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
             $stmtNotify->execute();
 
             // Get user email

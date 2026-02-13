@@ -346,8 +346,10 @@ GROUP BY up.user_plan_id
   $stmt = $conn->prepare($sql);
   if (!$stmt) die('prepare failed ' . $conn->error);
 $agentId = $_GET['agent_id'] ?? null;
-
-  $stmt->bind_param("ii", $agentId, $agentId);
+if ($agentId === '') {
+    $agentId = null;
+}
+  $stmt->bind_param("ss", $agentId, $agentId);
   $stmt->execute();
 
   $result = $stmt->get_result();
@@ -369,8 +371,10 @@ $agentId = $_GET['agent_id'] ?? null;
   $stmt = $conn->prepare($sql);
   if (!$stmt) die('prepare failed ' . $conn->error);
 $agentId = $_GET['agent_id'] ?? null;
-
-  $stmt->bind_param("ii", $agentId, $agentId);
+if ($agentId === '') {
+    $agentId = null;
+}
+  $stmt->bind_param("ss", $agentId, $agentId);
   $stmt->execute();
 
   $result = $stmt->get_result();
@@ -395,8 +399,10 @@ $agentId = $_GET['agent_id'] ?? null;
   $stmt = $conn->prepare($sql);
   if (!$stmt) die('prepare failed ' . $conn->error);
 $agentId = $_GET['agent_id'] ?? null;
-
-  $stmt->bind_param("ii", $agentId, $agentId);
+if ($agentId === '') {
+    $agentId = null;
+}
+  $stmt->bind_param("ss", $agentId, $agentId);
   $stmt->execute();
 
   $result = $stmt->get_result();
@@ -424,8 +430,10 @@ $agentId = $_GET['agent_id'] ?? null;
   $stmt = $conn->prepare($sql);
   if (!$stmt) die('prepare failed ' . $conn->error);
 $agentId = $_GET['agent_id'] ?? null;
-
-  $stmt->bind_param("ii", $agentId, $agentId);
+if ($agentId === '') {
+    $agentId = null;
+}
+  $stmt->bind_param("ss", $agentId, $agentId);
   $stmt->execute();
 
   $result = $stmt->get_result();
@@ -465,8 +473,10 @@ ORDER BY `created_at` DESC;
   $stmt = $conn->prepare($sql);
   if (!$stmt) die('prepare failed ' . $conn->error);
 $agentId = $_GET['agent_id'] ?? null;
-
-  $stmt->bind_param("ii", $agentId, $agentId);
+if ($agentId === '') {
+    $agentId = null;
+}
+  $stmt->bind_param("ss", $agentId, $agentId);
   $stmt->execute();
 
   $result = $stmt->get_result();

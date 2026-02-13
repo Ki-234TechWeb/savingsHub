@@ -107,7 +107,11 @@ function refreshPortfolio() {
   showNotification("Portfolio refreshed successfully", "success");
   
 }
+<<<<<<< HEAD
   // <button class="notification-close" onclick="this.parentElement.remove()">✕</button>
+=======
+
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 
 // Notification System
 function showNotification(message, type = "info") {

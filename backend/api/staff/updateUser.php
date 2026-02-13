@@ -80,7 +80,11 @@ if (empty($name) || empty($phone) || empty($address)) {
             "UPDATE users SET name = ?, email = ?, phone = ?, address = ?, nextofkin = ? WHERE user_id = ?"
         );
 
+<<<<<<< HEAD
         $stmt->bind_param("ssssss", $name, $email, $phone, $address, $nextofKin, $user_id);
+=======
+        $stmt->bind_param("sssssi", $name, $email, $phone, $address, $nextofKin, $user_id);
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 
         if ($stmt->execute()) {
             $response = [
@@ -88,6 +92,7 @@ if (empty($name) || empty($phone) || empty($address)) {
                 "message" => "Successfully Updated  User info ",
                 "code"    => 200
             ];
+<<<<<<< HEAD
            
 
             // Save to User info
@@ -103,6 +108,11 @@ $update->execute();
             // notification Insert
             $stmtNotify = $conn->prepare("INSERT INTO notifications (actor_type, actor_id, action,	target_table,target_id, message) VALUES (?, ?, ?, ?, ?, ?)");
             $stmtNotify->bind_param('ssssss', $actor_type, $agent_id, $action_type, $target_tb, $user_id, $message);
+=======
+            // notification Insert
+            $stmtNotify = $conn->prepare("INSERT INTO notifications (actor_type, actor_id, action,	target_table,target_id, message) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmtNotify->bind_param('sissis', $actor_type, $agent_id, $action_type, $target_tb, $user_id, $message);
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
             $stmtNotify->execute();
 
             // Get user email

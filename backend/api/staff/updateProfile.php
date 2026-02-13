@@ -35,7 +35,11 @@ if (!$agent_id || empty($nameToSave) || empty($phone) || empty($address)) {
 $check = $conn->prepare(
     "SELECT agent_id FROM agents WHERE name = ? AND agent_id != ?"
 );
+<<<<<<< HEAD
 $check->bind_param("ss", $nameToSave, $agent_id);
+=======
+$check->bind_param("si", $nameToSave, $agent_id);
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 $check->execute();
 $check->store_result();
 
@@ -57,7 +61,11 @@ $stmt = $conn->prepare(
      WHERE agent_id = ?"
 );
 $stmt->bind_param(
+<<<<<<< HEAD
     "ssss",
+=======
+    "sssi",
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
     $nameToSave,
     $phone,
     $address,
@@ -72,7 +80,11 @@ if ($stmt->execute()) {
         VALUES (?, ?, ?, ?, ?)"
     );
     $notify->bind_param(
+<<<<<<< HEAD
         "sssss",
+=======
+        "sisss",
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
         $actor_type,
         $agent_id,
         $action_type,

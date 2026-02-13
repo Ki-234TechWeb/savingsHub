@@ -3,7 +3,10 @@
   ini_set('display_errors', 1);
   header('Content-Type: application/json');
   include './../config/env.php';
+<<<<<<< HEAD
   require_once "./../../middleware/auth.php";
+=======
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 
   $type = $_GET['type'] ?? 'all';
   $users = [];
@@ -79,7 +82,11 @@ WHERE u.agent_id = ?;
         exit;
       }
 
+<<<<<<< HEAD
       $stmt->bind_param("s", $user_id);
+=======
+      $stmt->bind_param("i", $user_id);
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
       $stmt->execute();
       $result = $stmt->get_result();
       $userUpdate = [];
@@ -254,8 +261,13 @@ ORDER BY `created_at` DESC;
     }
   } elseif ($type === "singleStaff") {
     $stmt = $conn->prepare("SELECT agent_id, name, phone, email, created_at, password, address FROM agents WHERE agent_id =?");
+<<<<<<< HEAD
     
     $stmt->bind_param("s", $agent_id);
+=======
+    $agent_id = 5;
+    $stmt->bind_param("i", $agent_id);
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
     $stmt->execute();
     $singleStaff = [];
     $result = $stmt->get_result();
@@ -264,7 +276,6 @@ ORDER BY `created_at` DESC;
     }
   }
 }
-
 
 
   echo json_encode([
@@ -277,6 +288,10 @@ ORDER BY `created_at` DESC;
     "todaysCollections" => $todaysCollections,
     "weeklyCollections" => $weeklyCollections,
     "monthlyCollection" => $monthlyCollection,
+<<<<<<< HEAD
+=======
+    "todaysPendingCollections" => $todaysPendingCollections,
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
     "notifications" => $notifications,
     "userUpdate" => $userUpdate
   ]);

@@ -44,9 +44,13 @@ body {
 
 /* page Loader */
   .pageloader {
+<<<<<<< HEAD
    background-color: var(--background);
     width: 100%;
     height: 100vh;
+=======
+    width: 100%;
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
     position:fixed;
     top:0;
     bottom:0;
@@ -54,9 +58,14 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+<<<<<<< HEAD
     justify-content: center;
     gap: 2rem;
     z-index:2222222222;
+=======
+    gap: 2rem;
+    z-index:22222222;
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 
     }
 
@@ -76,7 +85,11 @@ body {
     .spinner-container svg {
       width: 100%;
       height: 100%;
+<<<<<<< HEAD
       animation: spin 1s linear infinite;
+=======
+      animation: spin 2s linear infinite;
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
     }
 
     @keyframes spin {
@@ -90,6 +103,7 @@ body {
 
     .loading-text {
       font-size: 0.875rem;
+<<<<<<< HEAD
       color: #9b9b9b;
       font-weight: 500;
       letter-spacing: 0.05em;
@@ -106,6 +120,13 @@ body {
 
 
 
+=======
+      color: #475569;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
     @media (min-width: 640px) {
       .loading-text {
         font-size: 1rem;
@@ -483,7 +504,10 @@ header {
   bottom: 0;
   width: 240px;
   overflow-y: auto;
+<<<<<<< HEAD
   scrollbar-width: none;
+=======
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 }
 
 /* notification style */
@@ -1064,9 +1088,14 @@ textarea:focus {
 }
 #notificationsContainer{
 display: flex;
+<<<<<<< HEAD
 
 justify-content: right;
 z-index: 11111111111111;
+=======
+justify-content: right;
+z-index: 11111111;
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
 }
 
 .modal-footer {
@@ -1205,6 +1234,7 @@ z-index: 11111111111111;
 .usersplan option {
   font-size: 0.7rem;
   padding: 10px 0;
+<<<<<<< HEAD
 }
 
 /* Responsive Design */
@@ -1433,3 +1463,225 @@ padding: 40px 0;
   white-space: nowrap;
   border-width: 0;
 }
+=======
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .header-content1 {
+    display: flex !important;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .header-content1 .Agent {
+    font-weight: 600;
+  }
+  .header-content2 .Agent {
+    padding: 30px 0 20px 0;
+    font-weight: 600;
+    display: block;
+  }
+  .header-content {
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem;
+    flex-direction: column;
+  }
+  .header-right {
+    gap: 1rem;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .navBtn svg {
+    display: flex;
+  }
+
+  .nav {
+    width: 300px;
+    height: 100vh;
+    display: none;
+    position: fixed;
+    background: white;
+    left: -60%;
+    bottom: 0;
+    padding: 20px 10px;
+    transition: all 11s ease-in;
+    z-index: 111;
+  }
+
+  .openDT {
+    width: 100%;
+    height: 100vh;
+    display: block;
+    background: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    padding: 20px 10px;
+    opacity: 1;
+  }
+
+  .navToggle {
+    left: 0;
+    display: block;
+    transition: all 11s ease-in;
+    animation: navT 0.7s forwards ease-in-out;
+  }
+
+  @keyframes navT {
+    0% {
+      left: -60%;
+    }
+    100% {
+      left: 0;
+    }
+  }
+
+  .main-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-item {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+  }
+
+  .dashboard-content {
+    padding: 1.5rem;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .header-right {
+    gap: 1rem;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .user-profile {
+    padding-left: 0;
+    border-left: none;
+  }
+
+  .dashboard-content {
+    padding: 1rem;
+  }
+
+  .sidebar {
+    flex-direction: column;
+    overflow-x: auto;
+    padding: 0.75rem;
+    gap: 0.25rem;
+  }
+
+  .nav-item {
+    padding: 0.5rem 0.875rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .filters {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .filter-group select {
+    min-width: 100%;
+  }
+
+  table {
+    font-size: 0.875rem;
+  }
+
+  th,
+  td {
+    padding: 0.75rem;
+    white-space: nowrap;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-content {
+    padding: 0.75rem 1rem;
+  }
+
+  .logo {
+    font-size: 1rem;
+  }
+
+  .logo-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.75rem;
+  }
+
+  .user-avatar {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.875rem;
+  }
+
+  .stat-value {
+    font-size: 1.75rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  button,
+  .button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .cards-grid {
+    gap: 0.75rem;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+>>>>>>> 81256442b605ca8e83665b70593c43a9a69ea9d7
