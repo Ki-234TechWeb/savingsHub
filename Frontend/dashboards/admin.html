@@ -5,824 +5,345 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - SavingsHub</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            /* V6 Theme - OKLCH Color Space */
-            --background: oklch(0.98 0.001 0);
-            --foreground: oklch(0.15 0.01 0);
-            --card: oklch(1 0 0);
-            --card-foreground: oklch(0.15 0.01 0);
-            --primary: oklch(0.45 0.15 260);
-            --primary-foreground: oklch(0.98 0.001 0);
-            --secondary: oklch(0.92 0.02 260);
-            --secondary-foreground: oklch(0.15 0.01 0);
-            --muted: oklch(0.94 0.01 0);
-            --muted-foreground: oklch(0.55 0.02 0);
-            --accent: oklch(0.65 0.12 180);
-            --accent-foreground: oklch(0.98 0.001 0);
-            --border: oklch(0.92 0.01 0);
-            --input: oklch(0.95 0.01 0);
-            --destructive: oklch(0.577 0.245 27.325);
-            --success: oklch(0.65 0.15 140);
-            --warning: oklch(0.75 0.12 50);
-            --info: oklch(0.65 0.12 260);
-            --radius: 0.625rem;
-            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: var(--background);
-            color: var(--foreground);
-            font-family: var(--font-sans);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Typography */
-        h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            line-height: 1.1;
-            letter-spacing: -0.02em;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            line-height: 1.2;
-            letter-spacing: -0.01em;
-            margin-bottom: 0.5rem;
-        }
-
-        h3 {
-            font-size: 1.125rem;
-            font-weight: 600;
-            line-height: 1.3;
-        }
-
-        p {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: var(--muted-foreground);
-        }
-
-        /* Sleek header with refined styling */
-        header {
-            background-color: var(--card);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            backdrop-filter: blur(10px);
-        }
-
-        .header-content {
-            max-width: 1600px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-        }
-
-        .logo {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--primary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .logo-icon {
-            width: 2rem;
-            height: 2rem;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 0.875rem;
-        }
-
-        .header-right {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding-left: 2rem;
-            border-left: 1px solid var(--border);
-        }
-
-        .user-avatar {
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
-        /* Redesigned main layout with improved spacing */
-        .main-layout {
-            display: grid;
-            grid-template-columns: 220px 1fr;
-            gap: 0;
-            min-height: calc(100vh - 70px);
-        }
-
-        /* Sleek sidebar navigation */
-        .sidebar {
-            background-color: var(--card);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            padding: 1.5rem 0;
-            position: sticky;
-            top: 70px;
-            max-height: calc(100vh - 70px);
-            overflow-y: auto;
-        }
-
-        .nav-item {
-            padding: 0.875rem 1.5rem;
-            text-decoration: none;
-            color: var(--muted-foreground);
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            border: none;
-            border-left: 3px solid transparent;
-            background: none;
-            display: block;
-            width: 100%;
-            text-align: left;
-        }
-
-        .nav-item:hover {
-            background-color: var(--muted);
-            color: var(--primary);
-        }
-
-        .nav-item.active {
-            background-color: var(--secondary);
-            color: var(--primary);
-            border-left-color: var(--primary);
-        }
-
-        /* Redesigned dashboard content area */
-        .dashboard-content {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-            padding: 2rem;
-            max-width: 1600px;
-            width: 100%;
-        }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 2rem;
-            gap: 1rem;
-        }
-
-        .dashboard-header h1 {
-            margin: 0;
-        }
-
-        .dashboard-header p {
-            margin-top: 0.5rem;
-        }
-
-        /* Improved cards grid layout */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background-color: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stat-card:hover {
-            border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08);
-            transform: translateY(-1px);
-        }
-
-        .stat-label {
-            color: var(--muted-foreground);
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .stat-value {
-            font-size: 2.25rem;
-            font-weight: 700;
-            color: var(--foreground);
-            margin-bottom: 0.75rem;
-            line-height: 1;
-        }
-
-        .stat-change {
-            font-size: 0.875rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .stat-change.positive {
-            color: var(--success);
-        }
-
-        .stat-change.negative {
-            color: var(--destructive);
-        }
-
-        /* Buttons */
-        button, .button {
-            font-family: var(--font-sans);
-            font-size: 0.95rem;
-            font-weight: 600;
-            padding: 0.625rem 1.25rem;
-            border: none;
-            border-radius: var(--radius);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: var(--primary-foreground);
-        }
-
-        .btn-primary:hover {
-            background-color: oklch(0.40 0.15 260);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background-color: var(--secondary);
-            color: var(--secondary-foreground);
-        }
-
-        .btn-secondary:hover {
-            background-color: oklch(0.88 0.02 260);
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            color: var(--primary);
-            border: 1.5px solid var(--primary);
-        }
-
-        .btn-outline:hover {
-            background-color: var(--primary);
-            color: var(--primary-foreground);
-        }
-
-        .btn-success {
-            background-color: var(--success);
-            color: white;
-        }
-
-        .btn-success:hover {
-            opacity: 0.9;
-        }
-
-        .btn-destructive {
-            background-color: var(--destructive);
-            color: white;
-        }
-
-        .btn-destructive:hover {
-            opacity: 0.9;
-        }
-
-        .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-        }
-
-        /* Redesigned tab navigation */
-        .tabs {
-            display: flex;
-            gap: 0.5rem;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .tab {
-            padding: 0.875rem 1.5rem;
-            background: none;
-            border: none;
-            color: var(--muted-foreground);
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -1px;
-        }
-
-        .tab:hover {
-            color: var(--foreground);
-        }
-
-        .tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Improved table styling */
-        .table-container {
-            background-color: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 0.75rem;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead {
-            background-color: var(--muted);
-        }
-
-        th {
-            padding: 1rem 1.5rem;
-            text-align: left;
-            font-weight: 600;
-            color: var(--foreground);
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        td {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid var(--border);
-            font-size: 0.95rem;
-        }
-
-        tbody tr:hover {
-            background-color: var(--muted);
-        }
-
-        /* Badges */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.375rem 0.875rem;
-            border-radius: 9999px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .badge-pending {
-            background-color: oklch(0.75 0.12 50 / 0.15);
-            color: var(--warning);
-        }
-
-        .badge-approved {
-            background-color: oklch(0.65 0.15 140 / 0.15);
-            color: var(--success);
-        }
-
-        .badge-rejected {
-            background-color: oklch(0.577 0.245 27.325 / 0.15);
-            color: var(--destructive);
-        }
-
-        .badge-active {
-            background-color: oklch(0.45 0.15 260 / 0.15);
-            color: var(--primary);
-        }
-
-        .badge-inactive {
-            background-color: oklch(0.94 0.01 0);
-            color: var(--muted-foreground);
-        }
-
-        /* Filters */
-        .filters {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .filter-group label {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--foreground);
-        }
-
-        .filter-group select {
-            min-width: 200px;
-        }
-
-        /* Forms */
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            font-weight: 600;
-            color: var(--foreground);
-            font-size: 0.95rem;
-        }
-
-        input, select, textarea {
-            padding: 0.625rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            font-family: var(--font-sans);
-            font-size: 0.95rem;
-            color: var(--foreground);
-            background-color: var(--input);
-            transition: all 0.2s ease;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background-color: var(--card);
-            border-radius: 1rem;
-            padding: 2rem;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 1rem;
-        }
-
-        .modal-header h2 {
-            margin: 0;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--muted-foreground);
-        }
-
-        .modal-close:hover {
-            color: var(--foreground);
-        }
-
-        .modal-footer {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border);
-        }
-
-        /* Notifications */
-        .notification {
-            padding: 1rem 1.5rem;
-            border-radius: var(--radius);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .notification.info {
-            background-color: oklch(0.45 0.15 260 / 0.1);
-            color: var(--info);
-        }
-
-        .notification.success {
-            background-color: oklch(0.65 0.15 140 / 0.1);
-            color: var(--success);
-        }
-
-        .notification.warning {
-            background-color: oklch(0.75 0.12 50 / 0.1);
-            color: var(--warning);
-        }
-
-        .notification.error {
-            background-color: oklch(0.577 0.245 27.325 / 0.1);
-            color: var(--destructive);
-        }
-
-        .notification-close {
-            margin-left: auto;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.25rem;
-            color: inherit;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .main-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar {
-                flex-direction: row;
-                flex-wrap: wrap;
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-                padding: 1rem;
-                gap: 0.25rem;
-                position: static;
-                max-height: none;
-            }
-
-            .nav-item {
-                padding: 0.5rem 1rem;
-                font-size: 0.875rem;
-                flex-shrink: 0;
-            }
-
-            .dashboard-content {
-                padding: 1.5rem;
-            }
-
-            .cards-grid {
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
-                padding: 1rem;
-            }
-
-            .header-right {
-                gap: 1rem;
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .user-profile {
-                padding-left: 0;
-                border-left: none;
-            }
-
-            .dashboard-content {
-                padding: 1rem;
-            }
-
-            .sidebar {
-                flex-direction: row;
-                overflow-x: auto;
-                padding: 0.75rem;
-                gap: 0.25rem;
-            }
-
-            .nav-item {
-                padding: 0.5rem 0.875rem;
-                white-space: nowrap;
-                flex-shrink: 0;
-            }
-
-            .dashboard-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .cards-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .filters {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-
-            .filter-group select {
-                min-width: 100%;
-            }
-
-            table {
-                font-size: 0.875rem;
-            }
-
-            th, td {
-                padding: 0.75rem;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            h2 {
-                font-size: 1.25rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header-content {
-                padding: 0.75rem 1rem;
-            }
-
-            .logo {
-                font-size: 1rem;
-            }
-
-            .logo-icon {
-                width: 1.75rem;
-                height: 1.75rem;
-                font-size: 0.75rem;
-            }
-
-            .user-avatar {
-                width: 2rem;
-                height: 2rem;
-                font-size: 0.875rem;
-            }
-
-            .stat-value {
-                font-size: 1.75rem;
-            }
-
-            .stat-label {
-                font-size: 0.75rem;
-            }
-
-            .stat-card {
-                padding: 1rem;
-            }
-
-            button, .button {
-                padding: 0.5rem 1rem;
-                font-size: 0.875rem;
-            }
-
-            .dashboard-header h1 {
-                font-size: 1.25rem;
-            }
-
-            .cards-grid {
-                gap: 0.75rem;
-            }
-        }
-
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="./../assets/css/admin.css" />
 </head>
 <body>
     <!-- Header -->
     <header>
         <div class="header-content">
+            <div class="header-content1">
             <a href="#" class="logo">
-                <div class="logo-icon">SH</div>
                 SavingsHub
             </a>
+             <div>
+          <span class="navBtn">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+              <g id="SVGRepo_iconCarrier">
+                <path d="M7.28308 19L20 19M20 5L12.9719 5" stroke="#363853" stroke-width="1.5" stroke-linecap="round">
+                </path>
+                <path d="M19.9996 12L4 12" stroke="#0095FF" stroke-width="1.5" stroke-linecap="round"></path>
+              </g>
+            </svg>
+          </span>
+        </div>
+        </div>
             <div class="header-right">
-                <span>Welcome, Admin</span>
-                <div class="user-profile">
+                <span class="Agent">Welcome, Admin</span>
+                <!-- <div class="user-profile">
                     <div class="user-avatar">A</div>
                     <div>
                         <div style="font-weight: 600;">Admin User</div>
                         <div style="font-size: 0.875rem; color: var(--muted-foreground);">admin@savingshub.com</div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </header>
+     
+ <div class="pageloader">
+    <div class="spinner-container">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="loaderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#6366f1" />
+            <stop offset="50%" stop-color="#3b82f6" />
+            <stop offset="100%" stop-color="#06b6d4" />
+          </linearGradient>
+        </defs>
+
+        <!-- Main gradient circle -->
+        <circle
+          cx="50"
+          cy="50"
+          r="40"
+          fill="none"
+          stroke="url(#loaderGradient)"
+          stroke-width="4"
+          stroke-dasharray="188"
+          stroke-dashoffset="0"
+          stroke-linecap="round"
+        />
+
+        <!-- Dark segment overlay -->
+        <circle
+          cx="50"
+          cy="50"
+          r="40"
+          fill="none"
+          stroke="#1e293b"
+          stroke-width="4"
+          stroke-dasharray="60"
+          stroke-dashoffset="-130"
+          stroke-linecap="round"
+        />
+      </svg>
+      <a href="#" class="logo"> SavingsHub </a>
+    </div>
+
+    <p class="loading-text">Loading . . . Please Wait</p>
+  </div>
+
 
     <!-- Main Layout -->
     <div class="main-layout">
         <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <a href="#overview" class="nav-item active" onclick="showTab('overview', event)">📊 Overview</a>
-            <a href="#users" class="nav-item" onclick="showTab('users', event)">👥 Users</a>
-            <a href="#agents" class="nav-item" onclick="showTab('agents', event)">🤝 Agents</a>
-            <a href="#approvals" class="nav-item" onclick="showTab('approvals', event)">✓ Approvals</a>
-            <a href="#reports" class="nav-item" onclick="showTab('reports', event)">📈 Reports</a>
-            <a href="#settings" class="nav-item" onclick="showTab('settings', event)">⚙️ Settings</a>
-        </aside>
+        
+         <aside class="sidebar nav">
+      <div class="header-content2">
+        <a href="#" class="logo"> SavingsHub </a>
+        <div class="header-right">
+          <span class="Agent">Welcome, Agent</span>
+          <div class="user-profile"></div>
+        </div>
+      </div>
+      <a href="#overview" class="nav-item active nav-link" onclick="showTab('overview', event)">
+        <span class="icon">
+          <svg viewBox="0 0 61.7998 61.7998" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+              <title></title>
+              <g data-name="Layer 2" id="Layer_2">
+                <g data-name="—ÎÓÈ 1" id="_ÎÓÈ_1">
+                  <circle cx="30.8999" cy="30.8999" fill="#58b0e0" r="30.8999"></circle>
+                  <path d="M23.255 38.68l15.907.121v12.918l-15.907-.121V38.68z" fill="#f9dca4" fill-rule="evenodd">
+                  </path>
+                  <path d="M43.971 58.905a30.967 30.967 0 0 1-25.843.14V48.417H43.97z" fill="#e6e6e6"
+                    fill-rule="evenodd"></path>
+                  <path d="M33.403 61.7q-1.238.099-2.503.1-.955 0-1.895-.057l1.03-8.988h2.41z" fill="#e9573e"
+                    fill-rule="evenodd"></path>
+                  <path
+                    d="M25.657 61.332A34.072 34.072 0 0 1 15.9 57.92a31.033 31.033 0 0 1-7.857-6.225l1.284-3.1 13.925-6.212c0 5.212 1.711 13.482 2.405 18.95z"
+                    fill="#677079" fill-rule="evenodd"></path>
+                  <path d="M39.165 38.759v3.231c-4.732 5.527-13.773 4.745-15.8-3.412z" fill-rule="evenodd"
+                    opacity="0.11"></path>
+                  <path d="M31.129 8.432c21.281 0 12.987 35.266 0 35.266-12.267 0-21.281-35.266 0-35.266z"
+                    fill="#ffe8be" fill-rule="evenodd"></path>
+                  <path d="M18.365 24.046c-3.07 1.339-.46 7.686 1.472 7.658a31.972 31.972 0 0 1-1.472-7.659z"
+                    fill="#f9dca4" fill-rule="evenodd"></path>
+                  <path d="M44.14 24.045c3.07 1.339.46 7.687-1.471 7.658a31.993 31.993 0 0 0 1.471-7.658z"
+                    fill="#f9dca4" fill-rule="evenodd"></path>
+                  <path
+                    d="M21.931 14.328c-3.334 3.458-2.161 13.03-2.161 13.03l-1.05-.495c-6.554-25.394 31.634-25.395 25.043 0l-1.05.495s1.174-9.572-2.16-13.03c-4.119 3.995-14.526 3.974-18.622 0z"
+                    fill="#464449" fill-rule="evenodd"></path>
+                  <path
+                    d="M36.767 61.243a30.863 30.863 0 0 0 17.408-10.018l-1.09-2.631-13.924-6.212c0 5.212-1.7 13.393-2.394 18.861z"
+                    fill="#677079" fill-rule="evenodd"></path>
+                  <path d="M39.162 41.98l-7.926 6.465 6.573 5.913s1.752-9.704 1.353-12.378z" fill="#ffffff"
+                    fill-rule="evenodd"></path>
+                  <path d="M23.253 41.98l7.989 6.465-6.645 5.913s-1.746-9.704-1.344-12.378z" fill="#ffffff"
+                    fill-rule="evenodd"></path>
+                  <path d="M28.109 51.227l3.137-2.818 3.137 2.818-3.137 2.817-3.137-2.817z" fill="#e9573e"
+                    fill-rule="evenodd"></path>
+                  <path
+                    d="M25.767 61.373a30.815 30.815 0 0 1-3.779-.88 2.652 2.652 0 0 1-.114-.093l-3.535-6.39 4.541-3.26h-4.752l1.017-6.851 4.11-2.599c.178 7.37 1.759 15.656 2.512 20.073z"
+                    fill="#434955" fill-rule="evenodd"></path>
+                  <path
+                    d="M36.645 61.266c.588-.098 1.17-.234 1.747-.384.682-.177 1.36-.377 2.034-.579l.134-.043 3.511-6.315-4.541-3.242h4.752l-1.017-6.817-4.11-2.586c-.178 7.332-1.758 15.571-2.51 19.966z"
+                    fill="#434955" fill-rule="evenodd"></path>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </span>
+        <span>Dashboard</span>
+      </a>
+      <a href="#users" class="nav-item nav-link showCollectio" onclick="showTab('users', event)">
+        <span class="icon">
+          <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 511.998 511.998" xml:space="preserve" fill="#000000">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+              <path style="fill: #2d527c"
+                d="M156.747,488.732c-9.848,0-24.224-4.823-56.16-40.563c-16.231-18.165-29.533-36.035-30.091-36.787 c-0.376-0.507-0.717-1.036-1.023-1.587c-6.073-10.932-9.283-23.321-9.283-35.827v-90.892c0-7.925,6.424-14.35,14.35-14.35h116.075 c16.624,0,32.305,6.421,44.155,18.082l59.433,58.485c8.383,8.382,12.955,19.419,12.955,31.159s-4.572,22.777-12.873,31.078 c-17.234,17.231-45.115,17.231-62.253,0.095l-59.37-59.372c-5.898-0.044-15.48-0.089-23.134-0.123l-10.82-0.052 c-7.925-0.042-14.317-6.499-14.275-14.424c0.042-7.899,6.457-14.275,14.348-14.275c0.026,0,0.05,0,0.076,0l10.802,0.052 c6.79,0.03,14.055,0.065,19.632,0.099c2.814,0.019,5.202,0.036,6.891,0.056c4.177,0.047,8.495,0.095,12.659,4.259l63.486,63.486 c5.946,5.948,15.624,5.948,21.569,0c2.976-2.976,4.563-6.806,4.563-10.88c0-4.074-1.586-7.904-4.467-10.784l-59.353-58.403 c-6.447-6.344-14.98-9.838-24.026-9.838H88.889v76.542c0,7.337,1.808,14.608,5.236,21.088c2.615,3.468,13.585,17.858,26.469,32.423 c25.476,28.797,35.211,32.208,36.504,32.554l155.149-0.03c10.576,0,22.902-5.538,34.621-11.21 c9.893-4.786,83.334-54.602,127.303-84.877c0.24-0.165,0.485-0.323,0.735-0.474c8.199-4.939,10.853-15.631,5.915-23.833 c-2.392-3.972-6.189-6.774-10.69-7.892c-4.417-1.096-8.99-0.442-12.912,1.842l-107.184,71.082c-6.605,4.379-15.51,2.576-19.89-4.028 c-4.379-6.605-2.576-15.509,4.028-19.89l107.483-71.28c0.174-0.115,0.349-0.227,0.528-0.333 c21.76-13.104,50.119-6.063,63.223,15.694c13.019,21.622,6.147,49.766-15.287,62.975c-13.295,9.152-115.768,79.597-130.749,86.847 c-14.716,7.122-30.476,14.076-47.121,14.076l-155.494,0.03C156.752,488.732,156.748,488.732,156.747,488.732z">
+              </path>
+              <rect x="14.35" y="265.452" style="fill: #cee8fa" width="84.146" height="189.587"></rect>
+              <g>
+                <path style="fill: #2d527c"
+                  d="M98.49,469.381H14.35c-7.925,0-14.35-6.424-14.35-14.35V265.45c0-7.925,6.424-14.35,14.35-14.35 h84.14c7.925,0,14.35,6.424,14.35,14.35v189.581C112.84,462.956,106.415,469.381,98.49,469.381z M28.699,440.681H84.14V279.799 H28.699V440.681z">
+                </path>
+                <path style="fill: #2d527c"
+                  d="M273.037,237.471c-59.056,0-107.103-48.045-107.103-107.103S213.98,23.265,273.037,23.265 S380.14,71.311,380.14,130.368S332.093,237.471,273.037,237.471z M273.037,51.966c-43.231,0-78.403,35.171-78.403,78.403 s35.171,78.403,78.403,78.403s78.403-35.171,78.403-78.403S316.268,51.966,273.037,51.966z">
+                </path>
+              </g>
+              <circle style="fill: #cee8fa" cx="348.925" cy="201.869" r="92.756"></circle>
+              <g>
+                <path style="fill: #2d527c"
+                  d="M348.932,308.969c-59.056,0-107.103-48.045-107.103-107.103S289.875,94.764,348.932,94.764 s107.103,48.045,107.103,107.103S407.988,308.969,348.932,308.969z M348.932,123.463c-43.231,0-78.403,35.171-78.403,78.403 s35.171,78.403,78.403,78.403s78.403-35.171,78.403-78.403S392.164,123.463,348.932,123.463z">
+                </path>
+                <path style="fill: #2d527c"
+                  d="M345.377,248.147c-15.513-0.517-28.181-8.532-28.181-16.805c0-4.395,3.879-10.858,8.791-10.858 c5.43,0,9.825,7.627,19.391,9.307v-20.942c-11.893-4.524-25.855-10.083-25.855-26.63c0-16.417,12.151-24.304,25.855-26.243v-3.619 c0-1.809,2.068-3.49,4.912-3.49c2.455,0,4.912,1.68,4.912,3.49v3.232c8.014,0.258,23.14,2.327,23.14,11.246 c0,3.491-2.328,10.602-8.016,10.602c-4.266,0-6.723-4.137-15.125-4.783v18.874c11.764,4.395,25.466,10.471,25.466,27.923 c0,16.03-10.342,25.726-25.466,28.181v3.75c0,1.809-2.457,3.49-4.912,3.49c-2.844,0-4.912-1.68-4.912-3.49L345.377,248.147 L345.377,248.147z M346.669,188.422v-15.384c-5.817,1.164-8.274,4.137-8.274,7.239 C338.397,184.027,341.758,186.354,346.669,188.422z M353.909,212.337v17.323c4.395-1.035,7.887-3.491,7.887-8.145 C361.795,217.251,358.562,214.536,353.909,212.337z">
+                </path>
+              </g>
+            </g>
+          </svg>
+        </span>
+        <span>Users Management</span></a>
+      <a href="#agents" class="nav-item nav-link showCreateUsers" onclick="showTab('agents', event)">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+              <title></title>
+              <g id="Complete">
+                <g id="add-square">
+                  <g>
+                    <rect data-name="--Rectangle" fill="none" height="20" id="_--Rectangle" rx="2" ry="2"
+                      stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.36" width="20"
+                      x="2" y="2"></rect>
+                    <line fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"
+                      stroke-width="0.36" x1="15.5" x2="8.5" y1="12" y2="12"></line>
+                    <line fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"
+                      stroke-width="0.36" x1="12" x2="12" y1="15.5" y2="8.5"></line>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </span>
+        <span>Agent Management </span>
+      </a>
+      <a href="#collections" class="nav-item nav-link showCollectio" id="colledId"  onclick="showTab('collections', event)">
+        <span class="icon">
+          <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 511.998 511.998" xml:space="preserve" fill="#000000">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+              <path style="fill: #2d527c"
+                d="M156.747,488.732c-9.848,0-24.224-4.823-56.16-40.563c-16.231-18.165-29.533-36.035-30.091-36.787 c-0.376-0.507-0.717-1.036-1.023-1.587c-6.073-10.932-9.283-23.321-9.283-35.827v-90.892c0-7.925,6.424-14.35,14.35-14.35h116.075 c16.624,0,32.305,6.421,44.155,18.082l59.433,58.485c8.383,8.382,12.955,19.419,12.955,31.159s-4.572,22.777-12.873,31.078 c-17.234,17.231-45.115,17.231-62.253,0.095l-59.37-59.372c-5.898-0.044-15.48-0.089-23.134-0.123l-10.82-0.052 c-7.925-0.042-14.317-6.499-14.275-14.424c0.042-7.899,6.457-14.275,14.348-14.275c0.026,0,0.05,0,0.076,0l10.802,0.052 c6.79,0.03,14.055,0.065,19.632,0.099c2.814,0.019,5.202,0.036,6.891,0.056c4.177,0.047,8.495,0.095,12.659,4.259l63.486,63.486 c5.946,5.948,15.624,5.948,21.569,0c2.976-2.976,4.563-6.806,4.563-10.88c0-4.074-1.586-7.904-4.467-10.784l-59.353-58.403 c-6.447-6.344-14.98-9.838-24.026-9.838H88.889v76.542c0,7.337,1.808,14.608,5.236,21.088c2.615,3.468,13.585,17.858,26.469,32.423 c25.476,28.797,35.211,32.208,36.504,32.554l155.149-0.03c10.576,0,22.902-5.538,34.621-11.21 c9.893-4.786,83.334-54.602,127.303-84.877c0.24-0.165,0.485-0.323,0.735-0.474c8.199-4.939,10.853-15.631,5.915-23.833 c-2.392-3.972-6.189-6.774-10.69-7.892c-4.417-1.096-8.99-0.442-12.912,1.842l-107.184,71.082c-6.605,4.379-15.51,2.576-19.89-4.028 c-4.379-6.605-2.576-15.509,4.028-19.89l107.483-71.28c0.174-0.115,0.349-0.227,0.528-0.333 c21.76-13.104,50.119-6.063,63.223,15.694c13.019,21.622,6.147,49.766-15.287,62.975c-13.295,9.152-115.768,79.597-130.749,86.847 c-14.716,7.122-30.476,14.076-47.121,14.076l-155.494,0.03C156.752,488.732,156.748,488.732,156.747,488.732z">
+              </path>
+              <rect x="14.35" y="265.452" style="fill: #cee8fa" width="84.146" height="189.587"></rect>
+              <g>
+                <path style="fill: #2d527c"
+                  d="M98.49,469.381H14.35c-7.925,0-14.35-6.424-14.35-14.35V265.45c0-7.925,6.424-14.35,14.35-14.35 h84.14c7.925,0,14.35,6.424,14.35,14.35v189.581C112.84,462.956,106.415,469.381,98.49,469.381z M28.699,440.681H84.14V279.799 H28.699V440.681z">
+                </path>
+                <path style="fill: #2d527c"
+                  d="M273.037,237.471c-59.056,0-107.103-48.045-107.103-107.103S213.98,23.265,273.037,23.265 S380.14,71.311,380.14,130.368S332.093,237.471,273.037,237.471z M273.037,51.966c-43.231,0-78.403,35.171-78.403,78.403 s35.171,78.403,78.403,78.403s78.403-35.171,78.403-78.403S316.268,51.966,273.037,51.966z">
+                </path>
+              </g>
+              <circle style="fill: #cee8fa" cx="348.925" cy="201.869" r="92.756"></circle>
+              <g>
+                <path style="fill: #2d527c"
+                  d="M348.932,308.969c-59.056,0-107.103-48.045-107.103-107.103S289.875,94.764,348.932,94.764 s107.103,48.045,107.103,107.103S407.988,308.969,348.932,308.969z M348.932,123.463c-43.231,0-78.403,35.171-78.403,78.403 s35.171,78.403,78.403,78.403s78.403-35.171,78.403-78.403S392.164,123.463,348.932,123.463z">
+                </path>
+                <path style="fill: #2d527c"
+                  d="M345.377,248.147c-15.513-0.517-28.181-8.532-28.181-16.805c0-4.395,3.879-10.858,8.791-10.858 c5.43,0,9.825,7.627,19.391,9.307v-20.942c-11.893-4.524-25.855-10.083-25.855-26.63c0-16.417,12.151-24.304,25.855-26.243v-3.619 c0-1.809,2.068-3.49,4.912-3.49c2.455,0,4.912,1.68,4.912,3.49v3.232c8.014,0.258,23.14,2.327,23.14,11.246 c0,3.491-2.328,10.602-8.016,10.602c-4.266,0-6.723-4.137-15.125-4.783v18.874c11.764,4.395,25.466,10.471,25.466,27.923 c0,16.03-10.342,25.726-25.466,28.181v3.75c0,1.809-2.457,3.49-4.912,3.49c-2.844,0-4.912-1.68-4.912-3.49L345.377,248.147 L345.377,248.147z M346.669,188.422v-15.384c-5.817,1.164-8.274,4.137-8.274,7.239 C338.397,184.027,341.758,186.354,346.669,188.422z M353.909,212.337v17.323c4.395-1.035,7.887-3.491,7.887-8.145 C361.795,217.251,358.562,214.536,353.909,212.337z">
+                </path>
+              </g>
+            </g>
+          </svg>
+        </span>
+        <span>Collections</span></a>
+      <a href="#plansTable" class="nav-item nav-link showPlans" onclick="showTab('plansTable', event)">
+         <span class="icon">
+          <svg fill="#000000" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512.001 512.001" xml:space="preserve">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+              <g>
+                <g>
+                  <path
+                    d="M435.2,51.201v-25.6c0-14.14-11.46-25.6-25.6-25.6H51.2c-14.14,0-25.6,11.46-25.6,25.6v38.4H12.8 c-7.074,0-12.8,5.726-12.8,12.8c0,7.074,5.726,12.8,12.8,12.8h12.8v25.6H12.8c-7.074,0-12.8,5.726-12.8,12.8s5.726,12.8,12.8,12.8 h12.8v25.6H12.8c-7.074,0-12.8,5.726-12.8,12.8s5.726,12.8,12.8,12.8h12.8v25.6H12.8c-7.074,0-12.8,5.726-12.8,12.8 c0,7.074,5.726,12.8,12.8,12.8h12.8v25.6H12.8c-7.074,0-12.8,5.726-12.8,12.8c0,7.074,5.726,12.8,12.8,12.8h12.8v25.6H12.8 c-7.074,0-12.8,5.726-12.8,12.8c0,7.074,5.726,12.8,12.8,12.8h12.8v25.6H12.8c-7.074,0-12.8,5.726-12.8,12.8 c0,7.074,5.726,12.8,12.8,12.8h12.8v25.6H12.8c-7.074,0-12.8,5.726-12.8,12.8c0,7.074,5.726,12.8,12.8,12.8h12.8v38.4 c0,14.14,11.46,25.6,25.6,25.6h358.4c14.14,0,25.6-11.46,25.6-25.6V238.797l-25.6,25.6v222.003H51.2v-38.4H64 c7.074,0,12.8-5.726,12.8-12.8c0-7.074-5.726-12.8-12.8-12.8H51.2v-25.6H64c7.074,0,12.8-5.726,12.8-12.8 c0-7.074-5.726-12.8-12.8-12.8H51.2v-25.6H64c7.074,0,12.8-5.726,12.8-12.8c0-7.074-5.726-12.8-12.8-12.8H51.2v-25.6H64 c7.074,0,12.8-5.726,12.8-12.8c0-7.074-5.726-12.8-12.8-12.8H51.2v-25.6H64c7.074,0,12.8-5.726,12.8-12.8 c0-7.074-5.726-12.8-12.8-12.8H51.2v-25.6H64c7.074,0,12.8-5.726,12.8-12.8s-5.726-12.8-12.8-12.8H51.2v-25.6H64 c7.074,0,12.8-5.726,12.8-12.8s-5.726-12.8-12.8-12.8H51.2v-25.6H64c7.074,0,12.8-5.726,12.8-12.8c0-7.074-5.726-12.8-12.8-12.8 H51.2v-38.4h358.4v25.6H435.2z">
+                  </path>
+                </g>
+              </g>
+              <g>
+                <g>
+                  <path
+                    d="M504.499,97.101l-25.6-25.6c-4.992-5.001-11.546-7.501-18.099-7.501c-6.554,0-13.107,2.5-18.099,7.501l-5.308,5.299H384 c-3.396,0-6.647,1.348-9.054,3.746l-76.8,76.8l18.099,18.099l73.054-73.045h22.494L212.301,301.901 c-1.946,1.946-3.567,4.19-4.796,6.656l-25.6,51.2c-4.932,9.856-2.995,21.76,4.796,29.551c4.915,4.915,11.469,7.501,18.108,7.501 c3.883,0,7.799-0.887,11.443-2.705l51.2-25.6c2.458-1.229,4.71-2.85,6.656-4.796l230.4-230.4 C514.5,123.307,514.5,107.094,504.499,97.101z M204.8,371.201l19.567-39.134l19.567,19.558L204.8,371.201z M265.054,336.547 l-25.6-25.6L460.8,89.601l25.6,25.6L265.054,336.547z">
+                  </path>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </span>
+        <span>Plans </span>
+      </a>
+
+         <a href="#notify" class="nav-item nav-link showNotify" onclick="showTab('notify', event)">
+        <span class="icon">
+          <svg fill="#000000" viewBox="0 0 32 32" id="icon" xmlns="http://www.w3.org/2000/svg" stroke="#000000"
+            stroke-width="0.00032">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+              <defs>
+                <style>
+                  .cls-1 {
+                    fill: none;
+                  }
+                </style>
+              </defs>
+              <path
+                d="M26,16.5859V14H24v3a1,1,0,0,0,.293.707L27,20.4141V22H5V20.4141L7.707,17.707A1,1,0,0,0,8,17V13A7.9854,7.9854,0,0,1,20,6.0825V3.8467a9.896,9.896,0,0,0-3-.7959V1H15V3.0508A10.0136,10.0136,0,0,0,6,13v3.5859L3.293,19.293A1,1,0,0,0,3,20v3a1,1,0,0,0,1,1h7v1a5,5,0,0,0,10,0V24h7a1,1,0,0,0,1-1V20a1,1,0,0,0-.293-.707ZM19,25a3,3,0,0,1-6,0V24h6Z">
+              </path>
+              <circle cx="26" cy="8" r="4"></circle>
+              <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32"
+                height="32"></rect>
+            </g>
+          </svg>
+        </span>
+        <span>Notifications </span>
+      </a>
+      <a href="#settings" class="nav-item nav-link showProfile" onclick="showTab('settings', event)">
+        <span class="icon">
+          <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 508.00 508.00" xml:space="preserve" fill="#000000" stroke="#000000" stroke-width="0.00508">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC"
+              stroke-width="2.032"></g>
+            <g id="SVGRepo_iconCarrier">
+              <circle style="fill: #4cdbc4" cx="254" cy="254" r="254"></circle>
+              <path style="fill: #f9b54c"
+                d="M254.4,322.8C254,322.8,254,322.8,254.4,322.8c-0.4,0-0.4,0-0.4,0c-60.8-29.6-54-68-54-68 c0-0.8,0-1.2,0.4-2c0.4,0.4,0.8,0.8,1.2,1.6c14,21.6,32.4,36.8,52.8,36.8s38.8-14.8,52.8-36.8c0.4-0.4,0.8-0.8,1.2-1.2 c0,0.4,0.4,1.2,0.4,1.6c0,0,0,0.4,0,0.8C309.2,261.6,309.6,296,254.4,322.8z">
+              </path>
+              <path style="fill: #f1543f" d="M254.4,322.8C254,322.8,254,322.8,254.4,322.8c-0.4,0-0.4,0-0.4,0H254.4z">
+              </path>
+              <path style="fill: #324a5e"
+                d="M254,508c82,0,154.4-38.8,200.8-98.8l-26-80l-109.2-52.8c0,18.8-0.8,51.2-6.8,92.8 c-13.6-42.8-58.8-46.4-58.8-46.4s-45.2,3.6-58.8,46.4c-6-41.6-6.8-74.4-6.8-92.8L78.8,329.2l-26,80C99.6,469.2,172,508,254,508z">
+              </path>
+              <g>
+                <path style="fill: #ffffff"
+                  d="M308.4,254.8c0,0,6.8,38.4-54.4,68.4c0,0,45.6,3.6,58.8,46.4C313.6,370.8,338.4,277.6,308.4,254.8z">
+                </path>
+                <path style="fill: #ffffff"
+                  d="M199.6,254.8c0,0-6.8,38.4,54.4,68.4c0,0-45.6,3.6-58.8,46.4C194.4,370.8,169.6,277.6,199.6,254.8z">
+                </path>
+              </g>
+              <g>
+                <path style="fill: #ffd05b"
+                  d="M316.8,236L316.8,236c-14.8,31.2-37.2,54.8-62.8,54.8c-27.6,0-51.6-27.6-66.4-62.4 c-5.6-0.4-12-4.8-15.2-12c-3.6-7.2-3.2-14.8,0-19.6c6.8,18.4,15.2,30.8,15.2,30.8c-19.6-45.6,15.2-98.8,15.2-98.8 c53.6,13.6,76.4-2.8,76.4-2.8c39.2-6.4,43.6,18.8,42.4,35.2c-0.4,9.2,0.4,18,1.6,27.2C326,211.2,318.4,232.8,316.8,236z">
+                </path>
+                <path style="fill: #ffd05b"
+                  d="M335.6,216.4c-3.2,6.4-8,10.8-13.2,12c4-6.4,9.6-16,14.8-28C338.8,204.8,338.4,210.8,335.6,216.4z">
+                </path>
+              </g>
+              <g>
+                <path style="fill: #324a5e"
+                  d="M254,46.4c0,0,35.2,1.2,66.4,30.4c68.4,64.4-3.6,159.6-3.6,159.6s9.2-23.2,6.4-47.6 c-1.2-9.2-2-18-1.6-27.2c1.2-16-3.2-41.6-42.4-35.2c0,0-22.8,16.8-76.4,2.8c0,0-34.8,53.2-15.2,98.8c0,0-57.6-86.8,3.2-142 l-18.4,3.6c0,0,22.8-41.6,68-27.2c0,0-4.4-7.2-18.4-11.2c0,0,20.4-8.8,32,5.6C254,56.8,260.8,51.2,254,46.4z">
+                </path>
+                <path style="fill: #324a5e"
+                  d="M322.4,228.4c-2.8,4.4-4.8,7.2-5.6,8l0,0c0,0,0,0,0-0.4c1.2-2.4,2.4-4.8,3.2-7.6 C320.8,228.4,321.6,228.4,322.4,228.4z">
+                </path>
+              </g>
+              <circle style="fill: #ffffff" cx="407.2" cy="324" r="57.2"></circle>
+              <path style="fill: #080707"
+                d="M441.2,314.8H416v-25.2c0-5.2-4-9.2-9.2-9.2s-9.2,4-9.2,9.2v25.2h-25.2c-5.2,0-9.2,4-9.2,9.2 s4,9.2,9.2,9.2h25.2V358c0,5.2,4,9.2,9.2,9.2s9.2-4,9.2-9.2v-25.2h25.2c5.2,0,9.2-4,9.2-9.2C450.4,318.8,446.4,314.8,441.2,314.8z">
+              </path>
+            </g>
+          </svg>
+        </span>
+        <span> settings </span></a>
+    </aside>
+
+ <div class="darktheme"></div>
+
 
         <!-- Main Content -->
         <main class="dashboard-content">
@@ -830,55 +351,77 @@
             <div id="notificationsContainer"></div>
 
             <!-- Dashboard Overview Tab -->
-            <div id="overview" class="tab-content active">
+           <div id="overview" class="tab-content active">
                 <div class="dashboard-header">
                     <div>
                         <h1>Dashboard Overview</h1>
                         <p>Monitor your platform's performance in real-time</p>
                     </div>
-                    <button class="button btn-primary" onclick="refreshDashboard()">🔄 Refresh</button>
+                   
                 </div>
 
                 <!-- Summary Cards -->
                 <div class="cards-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">Total Users</div>
-                        <div class="stat-value">2,847</div>
-                        <div class="stat-change positive">↑ 12.5% from last month</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Total Agents</div>
-                        <div class="stat-value">125</div>
-                        <div class="stat-change positive">↑ 8 new this month</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Pending Approvals</div>
-                        <div class="stat-value">23</div>
-                        <div class="stat-change negative">⚠️ Requires attention</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Assigned Users</div>
-                        <div class="stat-value">1,652</div>
-                        <div class="stat-change positive">↑ 58% adoption rate</div>
-                    </div>
+                 <div class="stat-card"> 
+                  <div class="stat-label">Total Savings Accounts</div>  
+                  <div class="stat-value"><span class="accountsCard">0</span></div>
+                   <div class="stat-change positive">↑ Growing steadily</div> 
+                  </div> 
+                  <!-- Total Income Card --> 
+                   <div class="stat-card"> 
+                    <div class="stat-label">Total Income</div>
+                     <div class="stat-value">₦<span id="incomeCard">0</span></div> 
+                     <div class="stat-change positive">💰 Commission earnings(This Month)</div>
+                     </div>
+                    
+                     <div class="stat-card"> 
+  <div class="stat-label">Total Deposits</div> 
+  <div class="stat-value">₦<span id="depositsCard">0</span></div>
+  <div class="stat-change positive">📥 Contributions received this month</div>
+</div>
+
                 </div>
 
                 <!-- Charts -->
                 <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); margin-top: 2rem;">
                     <div class="stat-card">
-                        <h3 style="margin-bottom: 1rem;">User Registration Trend</h3>
-                        <canvas id="registrationChart"></canvas>
+                        
+                       <div style="width: 100%; max-width: 900px; margin: auto;" style="height: 820;">
+                       <canvas id="transactionsLineChart" height="380"></canvas>
+                       </div>
                     </div>
-                    <div class="stat-card">
-                        <h3 style="margin-bottom: 1rem;">Agent Performance</h3>
-                        <canvas id="agentPerformanceChart"></canvas>
-                    </div>
+                   
                 </div>
             </div>
 
             <!-- User Management Tab -->
+           
             <div id="users" class="tab-content">
-                <div class="dashboard-header">
+               <div class="cards-grid">
+                      <!-- Total Users -->
+                        <div class="stat-card"> 
+                          <div class="stat-label">Total Users</div>
+                           <div class="stat-value totalUserLength">0</div>
+                            <div class="stat-change positive">↑ 12.5% from last month</div>
+                           </div> 
+                           
+                           <!-- Active Users --> 
+                            <div class="stat-card"> 
+                              <div class="stat-label">Active Users</div>
+                               <div class="stat-value activeUserLength">0</div>
+                                <div class="stat-change positive">Strong onboarding</div> 
+                              </div>
+                              
+                              <!-- New Users This Month --> 
+                               <div class="stat-card"> 
+                                <div class="stat-label">New Users </div>
+                                 <div class="stat-value newUserLength">0</div> 
+                                 <div class="stat-change positive">This Month</div>
+                                 </div>
+                  
+                </div>
+
+                <div class="dashboard-header" style="margin-top: 2rem; margin-bottom: 1rem">
                     <div>
                         <h1>User Management</h1>
                         <p>Manage users and assign field agents</p>
@@ -892,77 +435,68 @@
                         <label>Filter by Status</label>
                         <select id="userStatusFilter" onchange="filterUsers()">
                             <option value="">All Statuses</option>
-                            <option value="pending">Pending Approval</option>
-                            <option value="approved">Approved</option>
                             <option value="active">Active</option>
                             <option value="inactive">Inactive</option>
                         </select>
                     </div>
                     <div class="filter-group">
                         <label>Filter by Agent</label>
-                        <select id="agentFilter" onchange="filterUsers()">
+                        <select id="agentFilter" class="agent" onchange="filterUsers()">
                             <option value="">All Agents</option>
-                            <option value="unassigned">Unassigned</option>
-                            <option value="John Okafor">John Okafor</option>
-                            <option value="Amara Chioma">Amara Chioma</option>
-                            <option value="Tunde Adeyemi">Tunde Adeyemi</option>
+                            
                         </select>
                     </div>
                 </div>
 
                 <!-- Users Table -->
+                <div class="table-maincontent">
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
                                 <th>User Name</th>
-                                <th>Email</th>
+                                <th>Address</th>
                                 <th>Phone</th>
                                 <th>Assigned Agent</th>
                                 <th>Status</th>
                                 <th>Joined</th>
+                                <th>Set Savings Plan</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="usersTableBody">
-                            <!-- Table rows populated by JavaScript -->
+                     
                         </tbody>
                     </table>
                 </div>
+                </div>
             </div>
+
+
 
             <!-- Agent Management Tab -->
             <div id="agents" class="tab-content">
-                <div class="dashboard-header">
+              <div class="cards-grid">
+                 <div class="stat-card">
+                   <div class="stat-label">Total Agents</div>
+                    <div class="stat-value total-agent">0</div> 
+                    <div class="stat-change positive">↑ 5% growth</div> 
+                  </div>
+
+
+                </div>
+            
+
+                <div class="dashboard-header" style="margin-top: 2rem; margin-bottom: 1rem" >
                     <div>
                         <h1>Agent Management</h1>
                         <p>Manage field agents and track their performance</p>
                     </div>
-                    <button class="button btn-primary" onclick="openModal('addAgentModal')">+ Register Agent</button>
+                    <button class="button btn-primary registerAgent" onclick="registerAgent()" >+ Register Agent</button>
                 </div>
 
-                <!-- Agent Filters -->
-                <div class="filters">
-                    <div class="filter-group">
-                        <label>Filter by Location</label>
-                        <select onchange="filterAgents()">
-                            <option value="">All Locations</option>
-                            <option value="Lagos">Lagos</option>
-                            <option value="Oyo">Oyo</option>
-                            <option value="Ibadan">Ibadan</option>
-                            <option value="Abuja">Abuja</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Filter by Activity</label>
-                        <select onchange="filterAgents()">
-                            <option value="">All Activities</option>
-                            <option value="high">High Activity</option>
-                            <option value="medium">Medium Activity</option>
-                            <option value="low">Low Activity</option>
-                        </select>
-                    </div>
-                </div>
+                
+        
 
                 <!-- Agents Table -->
                 <div class="table-container">
@@ -971,11 +505,11 @@
                             <tr>
                                 <th>Agent Name</th>
                                 <th>Contact</th>
-                                <th>Location</th>
-                                <th>Users Onboarded</th>
-                                <th>Success Rate</th>
-                                <th>Status</th>
-                                <th>Registered</th>
+                                <th>Address</th>
+                                <th>Email</th>
+                                <th>Users Assigned</th>
+                                <th>Registered</th>          
+                                <th>Record Collection </th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -986,494 +520,606 @@
                 </div>
             </div>
 
-            <!-- Approvals Tab -->
-            <div id="approvals" class="tab-content">
-                <div class="dashboard-header">
-                    <div>
-                        <h1>User Approvals</h1>
-                        <p>Review and approve pending registrations</p>
-                    </div>
-                </div>
+              <!-- Collections Tab -->
+      <div id="collections" class="tab-content">
+        <div class="dashboard-header">
+          <div>
+            <h1>Collection Tracking</h1>
+            <p>Track contribution collections and payments</p>
+          </div>
+        
+        </div>
 
-                <!-- Approval Tabs -->
-                <div class="tabs">
-                    <button class="tab active" onclick="showApprovalTab('pending', this)">Pending (5)</button>
-                    <button class="tab" onclick="showApprovalTab('approved', this)">Approved (142)</button>
-                    <button class="tab" onclick="showApprovalTab('rejected', this)">Rejected (8)</button>
-                </div>
-
-                <!-- Pending Approvals -->
-                <div id="pending-tab" class="tab-content active">
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>User Name</th>
-                                    <th>Email</th>
-                                    <th>Registration Date</th>
-                                    <th>Agent Assigned</th>
-                                    <th>Notes</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="pendingApprovalsBody">
-                                <!-- Table rows populated by JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Approved Users -->
-                <div id="approved-tab" class="tab-content" style="display: none;">
-                    <p style="color: var(--muted-foreground);">Showing recently approved users</p>
-                </div>
-
-                <!-- Rejected Users -->
-                <div id="rejected-tab" class="tab-content" style="display: none;">
-                    <p style="color: var(--muted-foreground);">Showing recently rejected users</p>
-                </div>
+        <!-- Collection Stats -->
+        <div class="cards-grid">
+          <div class="stat-card">
+            <div class="stat-label">Today's Collections</div>
+            <div class="stat-value">
+              &#8358;
+              <span class="today_collection"></span>
             </div>
-
-            <!-- Reports Tab -->
-            <div id="reports" class="tab-content">
-                <div class="dashboard-header">
-                    <div>
-                        <h1>Reports & Analytics</h1>
-                        <p>View detailed performance metrics</p>
-                    </div>
-                </div>
-
-                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));">
-                    <div class="stat-card">
-                        <h3 style="margin-bottom: 1rem;">Collection Performance</h3>
-                        <canvas id="collectionChart"></canvas>
-                    </div>
-                    <div class="stat-card">
-                        <h3 style="margin-bottom: 1rem;">Agent Success Rate</h3>
-                        <canvas id="successRateChart"></canvas>
-                    </div>
-                </div>
+            <div class="stat-change positive">Successfully Collected</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">This Week collection</div>
+            <div class="stat-value">
+              &#8358;
+              <span class="weekly_collection"></span>
             </div>
+            <div class="stat-change positive">Successfully achieved</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-label">Monthly Collections</div>
+            <div class="stat-value">
+              &#8358;
+              <span class="monthly_collection"></span>
+            </div>
+            <div class="stat-change positive">Successfully achieved</div>
+          </div>
+        </div>
+
+
+
+        <!-- Collections History -->
+        <h3 style="margin-top: 2rem; margin-bottom: 1rem">
+          Filter Collections
+        </h3>
+        <div class="filters">
+          <div class="filter-group">
+            <label>My Collections</label>
+            <select id="collectionDateFilter" onchange="renderCollectionsHistory()">
+              <option value="Recent">Recent</option>
+              <option value="weekly">This Week</option>
+              <option value="monthly">This Month</option>
+              <option value="All Collections">All Collections</option>
+            </select>
+          </div>
+           <div class="filter-group" style="padding: 20px 0;">
+                        <label>Filter by Agent</label>
+                        <select id="agentCollectPlan" class="agent" onchange="filterUsersCollect()">
+                            
+                        </select>
+                    </div>
+        
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>User Name</th>
+                <th>Amount</th>
+                <th>Collection Date</th>
+                <th>Plan Type</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="collectionsHistoryBody">
+              <!-- Table rows populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+            <!-- plansTable Tab -->
+    <div id="plansTable" class="tab-content">
+                   <!-- Plans Tab -->
+    
+        <div class="dashboard-header">
+          <div>
+            <h1>Savings Plans</h1>
+            <p>Configure and manage user savings plans</p>
+          </div>
+          <!-- <button class="button btn-primary" onclick="openModal('createPlanModal')">+ Create Plan</button> -->
+        </div>
+
+        <!-- Plans Grid -->
+     
+                 <div class="stat-card"> 
+                  <div class="stat-label">Total Savings Accounts</div>  
+                  <div class="stat-value"><span class="accountsCard">0</span></div>
+                   <div class="stat-change positive">↑ Growing steadily</div> 
+                  </div> 
+
+        <!-- Active Plans Table -->
+        <h3 style="margin-top: 2rem; margin-bottom: 1rem">
+          Active Plans by User
+        </h3>
+
+                   <div class="filter-group" style="padding: 20px 0;">
+                        <label>Filter by Agent</label>
+                        <select id="agentFilterPlan" class="agent" onchange="filterUsers()">
+                            <option value="">All Agents</option>
+                            
+                        </select>
+                    </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>User Name</th>
+                <th>Plan Type</th>
+                <th>Target Amount</th>
+                <th>Collected</th>
+                <th>Progress</th>
+                <th>Status</th>
+                <th>Start Date</th>
+                <th>Initial Duration</th>
+                 <th>Commission/Month</th>
+                <th>Actual Duration</th>
+                <th>Total Commision</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="activePlansBody">
+
+            </tbody>
+          </table>
+        </div>
+      
+     </div>
+
+
+     <!-- Notification Tab -->
+      <div id="notify" class="notify-container tab-content">
+        <h2>Notifications</h2>
+
+        <!-- Filter Section -->
+        <div class="notify-filter">
+          <input type="date" id="notify-start-date" />
+          <input type="date" id="notify-end-date" />
+          <button class="notify-btn" onclick="applyDateFilter(notifications)">
+            Filter
+          </button>
+          <button class="notify-btn" onclick="resetFilter(notifications)">
+            Reset
+          </button>
+        </div>
+        <div class="table-container">
+          <!-- Notification Table -->
+
+          <table class="notify-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Message</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="notify-body"></tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="notify-pagination" id="notify-pagination"></div>
+      </div>
 
             <!-- Settings Tab -->
             <div id="settings" class="tab-content">
                 <div class="dashboard-header">
                     <div>
                         <h1>Settings</h1>
-                        <p>Configure platform settings</p>
+                        <p>Configure password settings</p>
                     </div>
                 </div>
 
-                <div class="stat-card" style="max-width: 600px;">
-                    <h3 style="margin-bottom: 1.5rem;">Platform Settings</h3>
-                    <div class="form-group">
-                        <label>Platform Name</label>
-                        <input type="text" value="SavingsHub" />
-                    </div>
-                    <div class="form-group">
-                        <label>Support Email</label>
-                        <input type="email" value="support@savingshub.com" />
-                    </div>
-                    <div class="form-group">
-                        <label>Phone Number</label>
-                        <input type="tel" value="+234 800 000 0000" />
-                    </div>
-                    <div class="form-group">
-                        <label>Default Commission Rate (%)</label>
-                        <input type="number" value="2.5" min="0" max="100" />
-                    </div>
-                    <button class="button btn-primary">Save Settings</button>
-                </div>
+               <div class="agent-profile-container" style="margin-top: 10px;">
+
+          <form id="changePass">
+            <div class="agent-profile-form-grid " >
+              <div class="agent-profile-form-group" style="margin-top: 10px;">
+                <label class="agent-profile-form-label">Current Password</label>
+                <input type="password" class="agent-profile-form-input staffPass" placeholder="Your Password" />
+              </div>
+
+              <div class="agent-profile-form-group new-password" style="margin-top: 10px;">
+                <label class="agent-profile-form-label">New Password</label>
+                <input type="password" class="agent-profile-form-input staffNewPass" placeholder="Enter New Password" />
+              </div>
+                <div class="agent-profile-form-group new-password" style="margin-top: 10px;">
+                <label class="agent-profile-form-label">Confirm Password</label>
+                <input type="password" class="agent-profile-form-input staffConfirmPass" placeholder="Confirm Password" />
+              </div>
+              
+            </div>
+              <button class="agent-profile-edit-btn changePassword">Change Password</button>
+       <!-- Spinner (hidden by default) --> 
+          <div id="loadingSpinnerPass" style="display:none;"></div>
+          </form>
+        </div>
             </div>
         </main>
     </div>
 
     <!-- Add User Modal -->
-    <div id="addUserModal" class="modal">
-        <div class="modal-content">
+    <div id="addUserModal" class="modal" style="overflow: auto;">
+      <div class="modalwrap">
+        <div class="modal-content " >
             <div class="modal-header">
                 <h2>Add New User</h2>
                 <button class="modal-close" onclick="closeModal('addUserModal')">✕</button>
             </div>
-            <form onsubmit="handleAddUser(event)">
+            <form id="form">
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" class="name" placeholder="Enter full name" />
+            </div>
+            <div class="form-group">
+              <label>Email Address </label>
+              <input type="email" class="email" placeholder="Enter email" />
+            </div>
+            <div class="form-group">
+              <label>Phone Number *</label>
+              <input type="tel" class="phone" placeholder="Enter phone number" />
+            </div>
+            <div class="form-group">
+              <label>Home Address *</label>
+              <textarea placeholder="Enter home address" rows="3" class="address"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Agent</label>
+              <select class="agent">
+                <option value="">Select agent...</option>
+
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Next of Kin</label>
+              <input type="text" class="nextofKin" placeholder="Enter next of kin name" />
+            </div>
+            <div class="form-group">
+              <label>Create Password</label>
+              <input type="tel" class="password" placeholder="Enter next of kin phone" />
+            </div>
+            <button type="button" class="button create-user btn-primary">
+              Create User
+            </button>
+            <!-- Spinner (hidden by default) --> 
+          <div id="loadingSpinnerCreate" class="loadingSpinner" style="display:none;"></div>
+          </form>
+        </div>
+      </div>
+
+
+
+
+    </div>
+    
+       <!-- reAssign user -->
+<!-- Modal --> 
+ <div id="modalAgent" class="Agentmodal-overlay"> 
+ <div class="Agentmodal-card"> 
+  <h2 style="padding: 10px 0 20px 0;"> Reassign Agent To <span class="userNameAssigned"></span> </h2>
+ <form id="selectionFormAgent">
+   <select class="Agentselect agent"> 
+ <option class="userAgent"></option>
+ </select> 
+ <input type="hidden" class="useridAssigned">
+ <div class="Agentmodal-actions"> 
+  <button id="closeModalAgent" class="Agentbtn-secondary">Close</button> 
+  <button class="Agentbtn-primary reAssigned">Save</button> 
+   <!-- Spinner (hidden by default) --> 
+          <div id="reasignUpdate" class="loadingSpinner" style="display:none;"></div>
+</div> 
+</form> 
+</div> 
+</div>
+
+<!-- update status -->
+<!-- Modal --> 
+ <div id="modalAgent" class="statusmodal-overlay"> 
+ <div class="statusmodal-card"> 
+  <h2 style="padding: 10px 0 10px 0;"> Approve User Payment <span class="userNameAssigned"></span> </h2>
+ <form id="approveStatus">
+   <p style="color:#b00020;font-weight:500;padding-bottom: 5px;">
+  Approving this payment will release the user’s funds and permanently close
+  this plan. This action cannot be undone.
+</p>
+ <input type="hidden" class="userPlanId">
+ <input type="hidden" class="useridStatus">
+ <div class="statusmodal-actions"> 
+  <button type="button" id="closeModalStatus" class="Agentbtn-secondary">Cancel</button> 
+  <button type="submit" class="Agentbtn-primary Approved">Approve</button> 
+</div>
+</form> 
+ 
+</div> 
+</div>
+
+
+<div id="updateUser" class="modal2" > 
+  <div class="modalwrap">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <h2>Update User Info</h2>
+        <button class="modal-close closeUpdate" onclick="closeModal('updateUser')">
+          ✕
+        </button>
+      </div>
+     <form id="formUpdate">
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" class="nameUpdate" placeholder="Enter full name" />
+                <input type="hidden" class="staffAgent" placeholder="Enter full name" />
+                      <input type="hidden" class="Usersid" placeholder="Enter full name" />
+            </div>
+            <div class="form-group">
+              <label>Email Address *</label>
+              <input type="email" class="emailUpdate" placeholder="Enter email" />
+              <input type="hidden" class="divId" placeholder="" />
+            </div>
+            <div class="form-group">
+              <label>Phone Number *</label>
+              <input type="tel" class="phoneUpdate" placeholder="Enter phone number" />
+            </div>
+            <div class="form-group">
+              <label>Home Address</label>
+              <textarea placeholder="Enter home address" rows="3" class="addressUpdate"></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label>Next of Kin</label>
+              <input type="text" class="nextofKinUpdate" placeholder="Enter next of kin name" />
+            </div>
+          
+            <button type="button" class="button proceedUpdate btn-primary">
+              Update User
+            </button>
+            <!-- Spinner (hidden by default) --> 
+          <div id="spinnerUpdate" class="loadingSpinner" style="display:none;"></div>
+          </form>
+    </div>
+    </div>
+  </div>
+
+  <!-- Record Collection Modal -->
+  <div id="recordCollectionModal" class="modal">
+    <div class="modalwrap">
+    <div class="modal-content recordCollect">
+      <div class="modal-header">
+        <h2>Record Collection</h2>
+        <button class="modal-close" onclick="closeModal('recordCollectionModal')">
+          ✕
+        </button>
+      </div>
+      <form id="recordCollect">
+        <div class="form-group">
+          <label>Select User *</label>
+          <select class="usersplan">
+            <option value="">Choose user...</option>
+          </select>
+        </div>
+        <input type="hidden" class="user_id" placeholder="Enter amount" step="0.01" />
+
+        <div class="form-group">
+          <label>Collection Amount *</label>
+          <input type="number" class="amount" placeholder="Enter amount" step="0.01" />
+        </div>
+        <input type="hidden" class="agent_id" placeholder="Enter amount" step="0.01" />
+
+        <div class="form-group">
+          <label>Collection Date *</label>
+          <input type="date" class="date" />
+        </div>
+
+        <input type="hidden" class="plan_type" placeholder="Enter plan type" step="0.01" />
+
+        <div class="modal-footer">
+          <button type="button" class="button btn-outline" onclick="closeModal('recordCollectionModal')">
+            Cancel
+          </button>
+          <button type="button" class="button btn-primary recordCollection">
+            Record 
+          </button>
+         <!-- Spinner (hidden by default) --> 
+          <div id="loadingSpinner" class="loadingSpinner" style="display:none;"></div>
+        </div>
+      </form>
+    </div>
+  </div>
+  </div>
+<!-- Edit collection -->
+
+   <div id="recordCollectionModalEdit" class="modal closeEditColl">
+    <div class="modalwrap">
+    <div class="modal-content recordCollect">
+      <div class="modal-header">
+        <h2> Edit Record Collection</h2>
+        <button class="modal-close closeEditColl" onclick="closeModal('recordCollectionModalEdit')">
+          ✕
+        </button>
+      </div>
+      <form id="recordCollectEdit" >
+        <div class="form-group">
+          <label>Select User *</label>
+          <select class="usersplanEdit">
+            <option value="" class="optionEdit"></option>
+          </select>
+        </div>
+        
+
+        <div class="form-group">
+          <label>Collection Amount *</label>
+          <input type="number" class="amountEdit" placeholder="Enter amount" step="0.01" />
+        </div>
+        <div class="form-group">
+          <label>Collection Date *</label>
+          <input type="date" class="dateEdit" />
+        </div>
+
+        <input type="hidden" class="plan_type" placeholder="Enter plan type" step="0.01" />
+
+        <div class="modal-footer">
+          <button type="button" class="button btn-outline closeEditColl" onclick="closeModal('recordCollectionModal')">
+            Cancel
+          </button>
+          <button type="button" class="button btn-primary recordCollectionEdit">
+            Record 
+          </button>
+         <!-- Spinner (hidden by default) --> 
+          <div id="loadingSpinnerEditColl" class="loadingSpinner" style="display:none;"></div>
+        </div>
+      </form>
+    </div>
+  </div>
+  </div>
+
+
+ <!-- Setup Plan Modal -->
+  <div id="setupPlanModal" class="modal modalplan" style="overflow: auto;" >
+        <div class="modalwrap">
+    <div class="update_content">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Setup Plan for User</h2>
+        <button class="modal-close" onclick="closeModal('setupPlanModal')">
+          ✕
+        </button>
+      </div>
+      <form onsubmit="handleSetupPlan(event)" id="plans">
+        <div class="form-group">
+          <label>Select User *</label>
+          <select class="users">
+            <option value="">Choose user...</option>
+           
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Select Plan *</label>
+          <select class="planType">
+            <option value="">Choose plans...</option>
+            <option value="Daily">daily</option>
+            <option value="weekly">weekly</option>
+            <option value="monthly">monthly</option>
+            <option value="loan">loan</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Target Amount *</label>
+          <input type="number" class="targetAmount" placeholder="Enter target amount" step="0.01" />
+        </div>
+        <div class="form-group">
+          <label>Duration (months) *</label>
+          <input type="number" class="duration" placeholder="Enter duration" min="1" />
+        </div>
+        <div class="form-group">
+          <label>Contribution Per Cycle *</label>
+          <input type="number" class="contribution" placeholder="Enter amount per cycle" step="0.01" />
+        </div>
+        <div class="form-group">
+          <label>Percentage/Commision *</label>
+          <input type="number" class="Commision" placeholder="Enter Plan Commission" step="0.01" />
+        </div>
+
+        <div class="modal-footer">
+          <button  class="button btn-outline" onclick="closeModal('setupPlanModal')">
+            Cancel
+          </button>
+          <button class="button btn-primary setplan">Set</button>
+                 <!-- Spinner (hidden by default) --> 
+          <div id="loadingSpinnerSetplan" class="loadingSpinner" style="display:none;"></div>
+        </div>
+      </form>
+    </div>
+    </div>
+    </div>
+  </div>
+
+<!-- Edit Agent Modal -->
+    <div id="EditAgentModal" class="modal3" style ="overflow:auto; ">
+      <div class="modalwrap">
+        <div class="update_content">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Agent Info</h2>
+                <button class="modal-close closeModal" onclick="closeModal('EditAgentModal')">✕</button>
+            </div>
+            <form id="formEditAgent">
                 <div class="form-group">
                     <label>Full Name</label>
-                    <input type="text" required />
+                    <input type="text" class="EditagentName"/>
+                    <input type="hidden" class="agentsid" placeholder="Enter full name" />
                 </div>
                 <div class="form-group">
                     <label>Email Address</label>
-                    <input type="email" required />
+                    <input type="email" class="EditagentEmail" />
                 </div>
                 <div class="form-group">
                     <label>Phone Number</label>
-                    <input type="tel" required />
+                    <input type="tel" class="EditagentPhone" />
                 </div>
                 <div class="form-group">
-                    <label>Assign Agent</label>
-                    <select required>
-                        <option value="">Select an agent...</option>
-                        <option value="John Okafor">John Okafor</option>
-                        <option value="Amara Chioma">Amara Chioma</option>
-                        <option value="Tunde Adeyemi">Tunde Adeyemi</option>
-                    </select>
+                    <label>Location</label>
+                    <textarea placeholder="Enter home address" rows="3" class="EditagentAddress"></textarea>
                 </div>
+             
+
                 <div class="modal-footer">
-                    <button type="button" class="button btn-outline" onclick="closeModal('addUserModal')">Cancel</button>
-                    <button type="submit" class="button btn-primary">Add User</button>
+                    <button type="button" class="button btn-outline closeModal" onclick="closeModal('EditAgentModal')">Cancel</button>
+                    <button type="submit" class="button btn-primary editAgent">Edit Agent Info</button>
                 </div>
             </form>
         </div>
+         </div>
+        </div>
     </div>
 
+
+
     <!-- Add Agent Modal -->
-    <div id="addAgentModal" class="modal">
+    <div id="addAgentModal" class="agentmodal" style = "overflow:auto; ">
+      <div class="modalwrap">
+        <div class="update_content">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Register New Agent</h2>
-                <button class="modal-close" onclick="closeModal('addAgentModal')">✕</button>
+                <button class="modal-close closeModal" onclick="closeModal('addAgentModal')">✕</button>
             </div>
             <form onsubmit="handleAddAgent(event)">
                 <div class="form-group">
                     <label>Full Name</label>
-                    <input type="text" required />
+                    <input type="text" class="agentName"/>
                 </div>
                 <div class="form-group">
                     <label>Email Address</label>
-                    <input type="email" required />
+                    <input type="email" class="agentEmail" />
                 </div>
                 <div class="form-group">
                     <label>Phone Number</label>
-                    <input type="tel" required />
+                    <input type="tel" class="agentPhone" />
                 </div>
                 <div class="form-group">
                     <label>Location</label>
-                    <select required>
-                        <option value="">Select location...</option>
-                        <option value="Lagos">Lagos</option>
-                        <option value="Oyo">Oyo</option>
-                        <option value="Ibadan">Ibadan</option>
-                        <option value="Abuja">Abuja</option>
-                    </select>
+                    <textarea placeholder="Enter home address" rows="3" class="agentAddress"></textarea>
                 </div>
+                <div class="form-group">
+              <label>Create Password</label>
+              <input type="tel" class="agentPassword" placeholder="Enter Password" />
+            </div>
+
                 <div class="modal-footer">
-                    <button type="button" class="button btn-outline" onclick="closeModal('addAgentModal')">Cancel</button>
-                    <button type="submit" class="button btn-primary">Register Agent</button>
+                    <button type="button" class="button btn-outline closeModal" onclick="closeModal('addAgentModal')">Cancel</button>
+                    <button type="submit" class="button btn-primary create-agent ">Register Agent</button>
                 </div>
             </form>
         </div>
+         </div>
+        <div>
     </div>
 
-    <script>
-        // Sample Data
-        const users = [
-            { id: 1, name: 'Chioma Nwosu', email: 'chioma.nwosu@email.com', phone: '+2348012345671', agent: 'John Okafor', status: 'pending', joined: '2025-11-08' },
-            { id: 2, name: 'Tunde Adesanya', email: 'tunde.adesanya@email.com', phone: '+2348012345672', agent: 'Amara Chioma', status: 'approved', joined: '2025-11-07' },
-            { id: 3, name: 'Grace Eze', email: 'grace.eze@email.com', phone: '+2348012345673', agent: 'Unassigned', status: 'active', joined: '2025-11-06' },
-            { id: 4, name: 'Abaddon Bankole', email: 'abaddon.bankole@email.com', phone: '+2348012345674', agent: 'Tunde Adeyemi', status: 'active', joined: '2025-11-05' },
-            { id: 5, name: 'Zainab Ibrahim', email: 'zainab.ibrahim@email.com', phone: '+2348012345675', agent: 'John Okafor', status: 'pending', joined: '2025-11-04' },
-        ];
-
-        const agents = [
-            { id: 1, name: 'John Okafor', contact: '+2348011111111', location: 'Lagos', usersOnboarded: 245, successRate: 92.5, status: 'active', registered: '2024-06-15' },
-            { id: 2, name: 'Amara Chioma', contact: '+2348022222222', location: 'Ibadan', usersOnboarded: 178, successRate: 88.3, status: 'active', registered: '2024-07-20' },
-            { id: 3, name: 'Tunde Adeyemi', contact: '+2348033333333', location: 'Abuja', usersOnboarded: 156, successRate: 85.7, status: 'active', registered: '2024-08-10' },
-        ];
-
-        const pendingApprovals = [
-            { id: 1, name: 'Chioma Nwosu', email: 'chioma.nwosu@email.com', registered: '2025-11-08', agent: 'John Okafor', notes: 'Self-registered via app' },
-            { id: 2, name: 'Zainab Ibrahim', email: 'zainab.ibrahim@email.com', registered: '2025-11-04', agent: 'John Okafor', notes: 'Referred by agent' },
-            { id: 3, name: 'Ngozi Okoro', email: 'ngozi.okoro@email.com', registered: '2025-11-01', agent: 'Unassigned', notes: 'Awaiting agent assignment' },
-            { id: 4, name: 'Emeka Obi', email: 'emeka.obi@email.com', registered: '2025-10-30', agent: 'Amara Chioma', notes: 'Referred by agent' },
-            { id: 5, name: 'Khadija Hassan', email: 'khadija.hassan@email.com', registered: '2025-10-28', agent: 'Tunde Adeyemi', notes: 'Corporate registration' },
-        ];
-
-        // Initialize Dashboard
-        function initializeDashboard() {
-            renderUsersTable();
-            renderAgentsTable();
-            renderPendingApprovals();
-            initializeCharts();
-        }
-
-        // Render Users Table
-        function renderUsersTable() {
-            const tbody = document.getElementById('usersTableBody');
-            const statusFilter = document.getElementById('userStatusFilter')?.value || '';
-            const agentFilter = document.getElementById('agentFilter')?.value || '';
-
-            let filteredUsers = users;
-            if (statusFilter) {
-                filteredUsers = filteredUsers.filter(u => u.status === statusFilter);
-            }
-            if (agentFilter) {
-                if (agentFilter === 'unassigned') {
-                    filteredUsers = filteredUsers.filter(u => u.agent === 'Unassigned');
-                } else {
-                    filteredUsers = filteredUsers.filter(u => u.agent === agentFilter);
-                }
-            }
-
-            tbody.innerHTML = filteredUsers.map(user => `
-                <tr>
-                    <td><strong>${user.name}</strong></td>
-                    <td>${user.email}</td>
-                    <td>${user.phone}</td>
-                    <td>
-                        <select onchange="reassignAgent(${user.id}, this.value)" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: var(--radius);">
-                            <option value="${user.agent}">${user.agent}</option>
-                            <option value="John Okafor">John Okafor</option>
-                            <option value="Amara Chioma">Amara Chioma</option>
-                            <option value="Tunde Adeyemi">Tunde Adeyemi</option>
-                        </select>
-                    </td>
-                    <td><span class="badge badge-${user.status === 'pending' ? 'pending' : user.status === 'approved' ? 'approved' : 'active'}">${user.status.charAt(0).toUpperCase() + user.status.slice(1)}</span></td>
-                    <td>${user.joined}</td>
-                    <td>
-                        <button class="button btn-sm btn-outline" onclick="viewUserDetails(${user.id})">View</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Render Agents Table
-        function renderAgentsTable() {
-            const tbody = document.getElementById('agentsTableBody');
-            tbody.innerHTML = agents.map(agent => `
-                <tr>
-                    <td><strong>${agent.name}</strong></td>
-                    <td>${agent.contact}</td>
-                    <td>${agent.location}</td>
-                    <td>${agent.usersOnboarded}</td>
-                    <td>${agent.successRate}%</td>
-                    <td><span class="badge badge-active">${agent.status.charAt(0).toUpperCase() + agent.status.slice(1)}</span></td>
-                    <td>${agent.registered}</td>
-                    <td>
-                        <button class="button btn-sm btn-outline" onclick="viewAgentDetails(${agent.id})">View</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Render Pending Approvals
-        function renderPendingApprovals() {
-            const tbody = document.getElementById('pendingApprovalsBody');
-            tbody.innerHTML = pendingApprovals.map(approval => `
-                <tr>
-                    <td><strong>${approval.name}</strong></td>
-                    <td>${approval.email}</td>
-                    <td>${approval.registered}</td>
-                    <td>${approval.agent}</td>
-                    <td>${approval.notes}</td>
-                    <td>
-                        <button class="button btn-sm btn-success" onclick="approveUser(${approval.id})">Approve</button>
-                        <button class="button btn-sm btn-destructive" onclick="rejectUser(${approval.id})" style="margin-left: 0.5rem;">Reject</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Tab Navigation
-        function showTab(tabName, event) {
-            if (event) event.preventDefault();
-            
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            
-            const tab = document.getElementById(tabName);
-            if (tab) {
-                tab.classList.add('active');
-                event.target.classList.add('active');
-            }
-        }
-
-        // Approval Tab Navigation
-        function showApprovalTab(tabName, button) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                if (tab.id === `${tabName}-tab`) {
-                    tab.style.display = 'block';
-                } else if (tab.id && tab.id.endsWith('-tab')) {
-                    tab.style.display = 'none';
-                }
-            });
-            
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            button.classList.add('active');
-        }
-
-        // Modal Functions
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        // Filter Functions
-        function filterUsers() {
-            renderUsersTable();
-        }
-
-        function filterAgents() {
-            renderAgentsTable();
-        }
-
-        // Action Functions
-        function reassignAgent(userId, agentName) {
-            showNotification(`User reassigned to ${agentName}`, 'success');
-        }
-
-        function approveUser(userId) {
-            const approval = pendingApprovals.find(a => a.id === userId);
-            if (approval) {
-                showNotification(`User ${approval.name} has been approved!`, 'success');
-                pendingApprovals.splice(pendingApprovals.indexOf(approval), 1);
-                renderPendingApprovals();
-            }
-        }
-
-        function rejectUser(userId) {
-            const approval = pendingApprovals.find(a => a.id === userId);
-            if (approval) {
-                showNotification(`User ${approval.name} has been rejected.`, 'warning');
-                pendingApprovals.splice(pendingApprovals.indexOf(approval), 1);
-                renderPendingApprovals();
-            }
-        }
-
-        function viewUserDetails(userId) {
-            const user = users.find(u => u.id === userId);
-            if (user) {
-                showNotification(`Viewing details for ${user.name}`, 'info');
-            }
-        }
-
-        function viewAgentDetails(agentId) {
-            const agent = agents.find(a => a.id === agentId);
-            if (agent) {
-                showNotification(`Viewing details for ${agent.name}`, 'info');
-            }
-        }
-
-        function refreshDashboard() {
-            showNotification('Dashboard refreshed successfully', 'success');
-        }
-
-        function handleAddUser(event) {
-            event.preventDefault();
-            showNotification('New user added successfully', 'success');
-            closeModal('addUserModal');
-            event.target.reset();
-        }
-
-        function handleAddAgent(event) {
-            event.preventDefault();
-            showNotification('New agent registered successfully', 'success');
-            closeModal('addAgentModal');
-            event.target.reset();
-        }
-
-        // Notification System
-        function showNotification(message, type = 'info') {
-            const container = document.getElementById('notificationsContainer');
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerHTML = `
-                ${message}
-                <button class="notification-close" onclick="this.parentElement.remove()">✕</button>
-            `;
-            container.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 5000);
-        }
-
-        // Chart Initialization
-        function initializeCharts() {
-            const registrationCtx = document.getElementById('registrationChart');
-            if (registrationCtx) {
-                new Chart(registrationCtx, {
-                    type: 'line',
-                    data: {
-                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                        datasets: [{
-                            label: 'New Users',
-                            data: [120, 190, 150, 220, 280, 350],
-                            borderColor: 'oklch(0.45 0.15 260)',
-                            backgroundColor: 'oklch(0.45 0.15 260 / 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: { legend: { display: true } }
-                    }
-                });
-            }
-
-            const agentPerfCtx = document.getElementById('agentPerformanceChart');
-            if (agentPerfCtx) {
-                new Chart(agentPerfCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['John Okafor', 'Amara Chioma', 'Tunde Adeyemi'],
-                        datasets: [{
-                            label: 'Users Onboarded',
-                            data: [245, 178, 156],
-                            backgroundColor: ['oklch(0.45 0.15 260)', 'oklch(0.65 0.12 180)', 'oklch(0.65 0.15 140)']
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        indexAxis: 'y'
-                    }
-                });
-            }
-
-            const collectionCtx = document.getElementById('collectionChart');
-            if (collectionCtx) {
-                new Chart(collectionCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Completed', 'In Progress', 'Pending'],
-                        datasets: [{
-                            data: [65, 25, 10],
-                            backgroundColor: ['oklch(0.65 0.15 140)', 'oklch(0.45 0.15 260)', 'oklch(0.75 0.12 50)']
-                        }]
-                    },
-                    options: { responsive: true }
-                });
-            }
-
-            const successRateCtx = document.getElementById('successRateChart');
-            if (successRateCtx) {
-                new Chart(successRateCtx, {
-                    type: 'radar',
-                    data: {
-                        labels: ['John Okafor', 'Amara Chioma', 'Tunde Adeyemi'],
-                        datasets: [{
-                            label: 'Success Rate %',
-                            data: [92.5, 88.3, 85.7],
-                            borderColor: 'oklch(0.45 0.15 260)',
-                            backgroundColor: 'oklch(0.45 0.15 260 / 0.2)'
-                        }]
-                    },
-                    options: { responsive: true }
-                });
-            }
-        }
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', initializeDashboard);
-
-        // Close modals when clicking outside
-        window.addEventListener('click', function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.classList.remove('active');
-            }
-        });
-    </script>
+  <script src="./../assets/js/admin.js"></script>
+   <script src="./../assets/js/auth.js"></script>
+    <script src="./../assets/api/admin.js"></script>
+    <script src="./../assets/api/reassignAgent.js"></script>
+      <script src="./../assets/api/approvewithdraw.js"></script>
+     <script src="./../assets/api/adminCollection.js"></script>
+       <script src="./../assets/api/adminCollectionEdit.js"></script>
+     <script src="./../assets/api/adminCreateUser.js"></script>
+       <script src="./../assets/api/createAgent.js"></script>
+     <script src="./../assets/api/adminUpdateUser.js"></script>
+     <script src="./../assets/api/adminUpdateAgent.js"></script>
+       <script src="./../assets/api/adminSetPlans.js"></script>
 </body>
 </html>

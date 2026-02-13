@@ -14,18 +14,15 @@ $name      = htmlspecialchars(trim($data['name'] ?? ''), ENT_QUOTES, 'UTF-8');
 $email     = htmlspecialchars(trim($data['email'] ?? ''), ENT_QUOTES, 'UTF-8');
 $phone     = htmlspecialchars(trim($data['phone'] ?? ''), ENT_QUOTES, 'UTF-8');
 $address   = htmlspecialchars(trim($data['address'] ?? ''), ENT_QUOTES, 'UTF-8');
-$nextofKin = htmlspecialchars(trim($data['nextofKin'] ?? ''), ENT_QUOTES, 'UTF-8');
-$agent     = htmlspecialchars(trim($data['agent'] ?? ''), ENT_QUOTES, 'UTF-8');
 $password  = htmlspecialchars(trim($data['password'] ?? ''), ENT_QUOTES, 'UTF-8');
-$actor_type = "staff";
-$agent_id = htmlspecialchars(trim($data['agent_id'] ?? ''), ENT_QUOTES, 'UTF-8');
-$target_tb = "Users";
-$action_type = "New User";
-$message = "Agent $agent Successfully Created New User: $name ";
+$actor_type = "Admin";
+$target_tb = "agent";
+$action_type = "New Agent";
+$message = "Agent Registered Successfully : $name ";
 $response = [];
 
 // Validation
-if (empty($name) || empty($phone) || empty($address) || empty($password) || empty($nextofKin)) {
+if (empty($name) || empty($phone) || empty($address) || empty($password)) {
     $response = [
         "status"  => "error",
         "message" => "Required field cannot be empty",
@@ -47,7 +44,7 @@ if (empty($name) || empty($phone) || empty($address) || empty($password) || empt
 } else {
 
     // Check if name already exists
-    $check = $conn->prepare("SELECT user_id FROM users WHERE name = ?");
+    $check = $conn->prepare("SELECT agent_id FROM agents WHERE name = ?");
     $check->bind_param("s", $name);
     $check->execute();
     $check->store_result();
@@ -55,7 +52,7 @@ if (empty($name) || empty($phone) || empty($address) || empty($password) || empt
     if ($check->num_rows > 0) {
         $response = [
             "status"  => "error",
-            "message" => "User name already exist, Try adding a prifix or business name",
+            "message" => "Agent name already exist, Try adding a prifix or business name",
             "code"    => 409 // Conflict
         ];
         echo json_encode($response);
@@ -67,59 +64,59 @@ if (empty($name) || empty($phone) || empty($address) || empty($password) || empt
     try {
         // Hash password
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-        // Prepare SQL
-        $stmt = $conn->prepare(
-            "INSERT INTO users (name, email, phone, address, password, agent, agent_id) 
-             VALUES (?, ?, ?, ?, ?, ?, ?)"
-        );
-
-        $stmt->bind_param("sssssss", $name, $email, $phone, $address, $hashed_password, $agent, $agent_id);
-
-        if ($stmt->execute()) {
-            $response = [
-                "status"  => "success",
-                "message" => "Successfully created account for $name",
-                "code"    => 200
-            ];
-       
-          // Clean name
+                 // Clean name
 $nameClean = strtolower($name);
 $nameClean = preg_replace('/\s+/', '', $nameClean);
 $nameClean = preg_replace('/[^a-z0-9]/', '', $nameClean);
 
 // Generate random string
-function generateRandomString($length = 6) {
+function agentgenerateRandomString($length = 6) {
     return substr(strtoupper(bin2hex(random_bytes(4))), 0, $length);
 }
 
-// Create user_id
-$user_id = $nameClean . '-' . generateRandomString(6);
+// Create agent_id
+$agent_id = $nameClean . '-' . agentgenerateRandomString(6);
 
 // Update query
-$updateId = $conn->prepare("UPDATE users
-    SET user_id = ?
+$updateId = $conn->prepare("UPDATE agents
+    SET agent_id = ?
     WHERE name = ?
 ");
 
-$updateId->bind_param("ss", $user_id, $name);
+$updateId->bind_param("ss", $agent_id, $name);
 $updateId->execute();
 
 
-                        // Save to User info
+
+        // Prepare SQL
+        $stmt = $conn->prepare(
+            "INSERT INTO agents (agent_id, name, email, phone, address, password) 
+             VALUES (?, ?, ?, ?, ?, ?)"
+        );
+
+        $stmt->bind_param("ssssss", $agent_id, $name, $email, $phone, $address, $hashed_password);
+
+        if ($stmt->execute()) {
+            $response = [
+                "status"  => "success",
+                "message" => "Successfully Registered Agent $name",
+                "code"    => 200
+            ];
+
+
+   
+
+
+  // Save to User info
 $update = $conn->prepare("INSERT INTO auth_users(username, user_id, user_type , password_hash) VALUES(?, ?, ?, ?)");
-
-$update->bind_param("ssss", $name, $user_id, $target_tb, $hashed_password);
+$update->bind_param("ssss", $name, $agent_id, $target_tb, $hashed_password);
 $update->execute();
-
-
-
-
 
             // notification Insert
             $stmtNotify = $conn->prepare("INSERT INTO notifications (actor_type, actor_id, action,	target_table,target_id, message) VALUES (?, ?, ?, ?, ?, ?)");
-            $stmtNotify->bind_param('ssssss', $actor_type, $agent_id, $action_type, $target_tb, $user_id, $message);
+            $stmtNotify->bind_param('ssssss', $actor_type, $agent_id, $action_type, $target_tb, $agent_id, $message);
             $stmtNotify->execute();
+             
 
                         // Get user email
 

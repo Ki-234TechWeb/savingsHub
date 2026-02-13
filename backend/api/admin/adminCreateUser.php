@@ -17,11 +17,11 @@ $address   = htmlspecialchars(trim($data['address'] ?? ''), ENT_QUOTES, 'UTF-8')
 $nextofKin = htmlspecialchars(trim($data['nextofKin'] ?? ''), ENT_QUOTES, 'UTF-8');
 $agent     = htmlspecialchars(trim($data['agent'] ?? ''), ENT_QUOTES, 'UTF-8');
 $password  = htmlspecialchars(trim($data['password'] ?? ''), ENT_QUOTES, 'UTF-8');
-$actor_type = "staff";
+$actor_type = "Admin";
 $agent_id = htmlspecialchars(trim($data['agent_id'] ?? ''), ENT_QUOTES, 'UTF-8');
-$target_tb = "Users";
+$target_tb = "user";
 $action_type = "New User";
-$message = "Agent $agent Successfully Created New User: $name ";
+$message = "Admn Successfully Created New User: $name ";
 $response = [];
 
 // Validation
@@ -82,8 +82,8 @@ if (empty($name) || empty($phone) || empty($address) || empty($password) || empt
                 "message" => "Successfully created account for $name",
                 "code"    => 200
             ];
-       
-          // Clean name
+
+// Clean name
 $nameClean = strtolower($name);
 $nameClean = preg_replace('/\s+/', '', $nameClean);
 $nameClean = preg_replace('/[^a-z0-9]/', '', $nameClean);
@@ -111,10 +111,6 @@ $update = $conn->prepare("INSERT INTO auth_users(username, user_id, user_type , 
 
 $update->bind_param("ssss", $name, $user_id, $target_tb, $hashed_password);
 $update->execute();
-
-
-
-
 
             // notification Insert
             $stmtNotify = $conn->prepare("INSERT INTO notifications (actor_type, actor_id, action,	target_table,target_id, message) VALUES (?, ?, ?, ?, ?, ?)");

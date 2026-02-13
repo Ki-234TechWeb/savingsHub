@@ -192,6 +192,104 @@ SET u.collected = c.total_contributions;
 
 
 
+    <div id="users" class="tab-content">
+               <div class="cards-grid">
+                      <!-- Total Users -->
+                        <div class="stat-card"> 
+                          <div class="stat-label">Total Users</div>
+                           <div class="stat-value">2,847</div>
+                            <div class="stat-change positive">↑ 12.5% from last month</div>
+                           </div> 
+                           
+                           <!-- Active Users --> 
+                            <div class="stat-card"> 
+                              <div class="stat-label">Active Users</div>
+                               <div class="stat-value">1,920</div>
+                                <div class="stat-change positive">Strong onboarding</div> 
+                              </div>
+                              
+                              <!-- New Users This Month --> 
+                               <div class="stat-card"> 
+                                <div class="stat-label">New Users (Jan)</div>
+                                 <div class="stat-value">327</div> 
+                                 <div class="stat-change positive">This Month</div>
+                                 </div>
+                  
+                </div>
+
+                <div class="dashboard-header">
+                    <div>
+                        <h1>User Management</h1>
+                        <p>Manage users and assign field agents</p>
+                    </div>
+                    <button class="button btn-primary" onclick="openModal('addUserModal')">+ Add User</button>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Filter by Status</label>
+                        <select id="userStatusFilter" onchange="filterUsers()">
+                            <option value="">All Statuses</option>
+                            <option value="pending">Pending Approval</option>
+                            <option value="approved">Approved</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Filter by Agent</label>
+                        <select id="agentFilter" onchange="filterUsers()">
+                            <option value="">All Agents</option>
+                            <option value="unassigned">Unassigned</option>
+                            <option value="John Okafor">John Okafor</option>
+                            <option value="Amara Chioma">Amara Chioma</option>
+                            <option value="Tunde Adeyemi">Tunde Adeyemi</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Assigned Agent</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Table rows populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+SELECT month,
+       SUM(total_deposits) AS total_deposits,
+       SUM(total_income) AS total_income
+FROM (
+    SELECT 
+        DATE_FORMAT(c.date, '%Y-%m') AS month,
+        SUM(c.amount) AS total_deposits,
+        p.Commision AS total_income
+    FROM contributions c
+    JOIN userplans p 
+        ON c.user_plan_id = p.user_plan_id
+    GROUP BY month, c.user_plan_id
+) AS monthly_plan_income
+GROUP BY month;
+
+
+
+
+
 
 
 

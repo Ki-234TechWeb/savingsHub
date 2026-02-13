@@ -19,10 +19,10 @@ $targetAmount = htmlspecialchars(trim($data['targetAmount'] ?? ''), ENT_QUOTES, 
 $duration     = htmlspecialchars(trim($data['duration'] ?? ''), ENT_QUOTES, 'UTF-8');
 $contribution = htmlspecialchars(trim($data['contribution'] ?? ''), ENT_QUOTES, 'UTF-8');
 $Commision = htmlspecialchars(trim($data['Commision'] ?? ''), ENT_QUOTES, 'UTF-8');
-$actor_type = "staff";
+$actor_type = "Admin";
 $target_tb = "Users";
 $action_type = "set plan";
-$message = "Agent $agentId Successfully Set New Plan for $user ";
+$message = "$actor_type Successfully Set New Plan for $user ";
 $response = [];
 
 // Validation

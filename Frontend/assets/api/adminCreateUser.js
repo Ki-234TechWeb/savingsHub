@@ -1,12 +1,12 @@
 const form = document.getElementById("form");
 const createuser = document.querySelector(".create-user");
-const spinnerCreate = document.getElementById('loadingSpinnerCreate');
-const createpage = document.querySelector('.pageloader');
+const adminspinnerCreate = document.getElementById('loadingSpinnerCreate');
+const admincreatepage = document.querySelector('.pageloader');
 form.addEventListener("submit", handleCreateUser);
 
 async function handleCreateUser(event) {
   event.preventDefault();
-  spinnerCreate.style.display = "block";
+  adminspinnerCreate.style.display = "block";
   createuser.style.display = "none";
   let select = document.querySelector(".agent");
   let name = document.querySelector(".name").value.trim();
@@ -30,7 +30,7 @@ async function handleCreateUser(event) {
     return;
   }
 
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     showNotification("Invalid email format", "error");
     restoreCreateButton()
     return;
@@ -49,11 +49,10 @@ async function handleCreateUser(event) {
     agent_id: agent_id,
   };
 
-    createpage.style.display = "flex";
   try {
     const BASE_URL = window.location.origin;
     const res = await fetch(
-      `${BASE_URL}/savinghub/backend/api/staff/createUser.php`,
+      `${BASE_URL}/savinghub/backend/api/admin/adminCreateUser.php`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" }, // tell PHP it's JSON
@@ -64,9 +63,9 @@ async function handleCreateUser(event) {
 
     if (data.status === "success") {
       showNotification(data.message, "success");
-      createpage.style.display = "flex";
+      admincreatepage.style.display = "flex";
       setTimeout(() => {
-        window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/staff.html`;
+        window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/admin.html`;
       }, 800); 
     } else {
       showNotification(data.message, "error");
@@ -86,9 +85,9 @@ createuser.addEventListener("click", function (event) {
 });
 
 function restoreCreateButton() {
- spinnerCreate.style.display = "none";
+ adminspinnerCreate.style.display = "none";
   createuser.style.display = "block";
-  createpage.style.display = "none";
+  admincreatepage.style.display = "none";
 }
 
 

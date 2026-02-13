@@ -36,7 +36,7 @@ async function handleRecordCollection(event) {
 collectspin.style.display = "flex";
   try {
     const BASE_URL = window.location.origin;
-    const res = await fetch(`${BASE_URL}/savinghub/backend/api/staff/collection.php`, {
+    const res = await fetch(`${BASE_URL}/savinghub/backend/api/admin/collection.php`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
@@ -47,7 +47,7 @@ collectspin.style.display = "flex";
       showNotification(data.message, "success");
       setTimeout(() => {
           collectspin.style.display = "flex";
-        window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/staff.html`;
+        window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/admin.html`;
       }, 800);
     } else {
       showNotification(data.message, "error");

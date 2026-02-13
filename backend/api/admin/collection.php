@@ -19,10 +19,10 @@ $date = htmlspecialchars(trim($data['date'] ?? ''), ENT_QUOTES, 'UTF-8');
 $amount     = htmlspecialchars(trim($data['amount'] ?? ''), ENT_QUOTES, 'UTF-8');
 $plan_type = htmlspecialchars(trim($data['plan_type'] ?? ''), ENT_QUOTES, 'UTF-8');
 $response = [];
-$actor_type = "staff";
+$actor_type = "Admin";
 $target_tb = "contributions";
 $action_type = "Collected contribution";
-$message = "Agent $agent_id Successfully Collected ₦$amount from $user";
+$message = "Admin Successfully Collected ₦$amount from $user";
 
 $sqlUser_id = "SELECT `user_id`,`user_plan_id`, `user_name`, `plan_type`,`contribution_per_cycle` FROM `userplans` WHERE `agent_id` = ?";
 
@@ -57,7 +57,7 @@ if (empty($user) || empty($user_id) || empty($amount) || empty($user_id) || empt
             $stmtSum->execute();
             $stmtSum->close();
 
-          
+            
 
             // Update status dynamically
             $stmtStatus = $conn->prepare("
@@ -82,7 +82,7 @@ WHERE withdrawn_at IS NULL;
 
             // Get user email
             $stmtgetEmail = $conn->prepare("SELECT `email` FROM users WHERE user_id = ?");
-            $stmtgetEmail->bind_param("i", $user_id);
+            $stmtgetEmail->bind_param("s", $user_id);
             $stmtgetEmail->execute();
             $result = $stmtgetEmail->get_result();
 

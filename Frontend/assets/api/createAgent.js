@@ -1,22 +1,19 @@
-const form = document.getElementById("form");
-const createuser = document.querySelector(".create-user");
+const addAgentModal = document.getElementById("addAgentModal");
+const createAgent = document.querySelector(".create-agent");
 const spinnerCreate = document.getElementById('loadingSpinnerCreate');
 const createpage = document.querySelector('.pageloader');
-form.addEventListener("submit", handleCreateUser);
+addAgentModal.addEventListener("submit", handleCreateAgent);
 
-async function handleCreateUser(event) {
+async function handleCreateAgent(event) {
   event.preventDefault();
   spinnerCreate.style.display = "block";
-  createuser.style.display = "none";
-  let select = document.querySelector(".agent");
-  let name = document.querySelector(".name").value.trim();
-  let email = document.querySelector(".email").value.trim();
-  let phone = document.querySelector(".phone").value.trim();
-  let address = document.querySelector(".address").value.trim();
-  let nextofKin = document.querySelector(".nextofKin").value.trim();
-  let password = document.querySelector(".password").value.trim();
-  let agent = select.value.trim();
-  let agent_id = select.options[select.selectedIndex].dataset.agent_id;
+  createAgent.style.display = "none";
+  let name = document.querySelector(".agentName").value.trim();
+  let email = document.querySelector(".agentEmail").value.trim();
+  let phone = document.querySelector(".agentPhone").value.trim();
+  let address = document.querySelector(".agentAddress").value.trim();
+  let password = document.querySelector(".agentPassword").value.trim();
+ 
   // Validation
   if (!name || !phone || !address || !password) {
     showNotification("Required fields cannot be empty", "error");
@@ -43,17 +40,15 @@ async function handleCreateUser(event) {
     email: email,
     phone: phone,
     address: address,
-    nextofKin: nextofKin,
     password: password,
-    agent: agent,
-    agent_id: agent_id,
+    
   };
 
     createpage.style.display = "flex";
   try {
     const BASE_URL = window.location.origin;
     const res = await fetch(
-      `${BASE_URL}/savinghub/backend/api/staff/createUser.php`,
+      `${BASE_URL}/savinghub/backend/api/admin/createAgent.php`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" }, // tell PHP it's JSON
@@ -66,7 +61,7 @@ async function handleCreateUser(event) {
       showNotification(data.message, "success");
       createpage.style.display = "flex";
       setTimeout(() => {
-        window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/staff.html`;
+        window.location.href = '';
       }, 800); 
     } else {
       showNotification(data.message, "error");
@@ -79,15 +74,15 @@ async function handleCreateUser(event) {
 }
 
 
-createuser.addEventListener("click", function (event) {
+createAgent.addEventListener("click", function (event) {
   event.preventDefault(); 
-  handleCreateUser(event);
+  handleCreateAgent(event);
   
 });
 
 function restoreCreateButton() {
  spinnerCreate.style.display = "none";
-  createuser.style.display = "block";
+  createAgent.style.display = "block";
   createpage.style.display = "none";
 }
 

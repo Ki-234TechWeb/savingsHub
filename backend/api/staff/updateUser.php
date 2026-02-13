@@ -3,6 +3,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 header('Content-Type: application/json');
 include './../config/env.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 require __DIR__ . '/../../../vendor/autoload.php';
@@ -16,122 +17,117 @@ $phone     = htmlspecialchars(trim($data['phone'] ?? ''), ENT_QUOTES, 'UTF-8');
 $address   = htmlspecialchars(trim($data['address'] ?? ''), ENT_QUOTES, 'UTF-8');
 $nextofKin = htmlspecialchars(trim($data['nextofKin'] ?? ''), ENT_QUOTES, 'UTF-8');
 $agent     = htmlspecialchars(trim($data['agent'] ?? ''), ENT_QUOTES, 'UTF-8');
-$password  = htmlspecialchars(trim($data['password'] ?? ''), ENT_QUOTES, 'UTF-8');
 $actor_type = "staff";
 $agent_id = htmlspecialchars(trim($data['agent_id'] ?? ''), ENT_QUOTES, 'UTF-8');
+$user_id = (int)($data['user_id'] ?? 0);
+
 $target_tb = "Users";
-$action_type = "New User";
-$message = "Agent $agent Successfully Created New User: $name ";
+$action_type = " User update";
+$message = " Successfully Updated  User info ";
 $response = [];
 
 // Validation
-if (empty($name) || empty($phone) || empty($address) || empty($password) || empty($nextofKin)) {
+if (empty($name) || empty($phone) || empty($address)) {
     $response = [
         "status"  => "error",
         "message" => "Required field cannot be empty",
         "code"    => 400
     ];
-} elseif (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+} elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $response = [
         "status"  => "error",
         "message" => "Invalid email format",
         "code"    => 422
     ];
-}
- elseif (strlen($password) < 6) {
-    $response = [
-        "status"  => "error",
-        "message" => "Password cannot be less than 6 characters",
-        "code"    => 422
-    ];
 } else {
 
+
+    if ($user_id === 0) {
+        $response = [
+            "status" => "error",
+            "message" => "Invalid or missing user_id",
+            "code" => 400
+        ];
+        echo json_encode($response);
+        exit;
+    }
+
     // Check if name already exists
-    $check = $conn->prepare("SELECT user_id FROM users WHERE name = ?");
-    $check->bind_param("s", $name);
+    // Check duplicate agent name
+    $check = $conn->prepare(
+        "SELECT user_id FROM users WHERE name = ? AND user_id != ?"
+    );
+    $check->bind_param("ss", $name, $user_id);
     $check->execute();
     $check->store_result();
 
     if ($check->num_rows > 0) {
-        $response = [
-            "status"  => "error",
-            "message" => "User name already exist, Try adding a prifix or business name",
-            "code"    => 409 // Conflict
-        ];
-        echo json_encode($response);
+        echo json_encode([
+            "status" => "error",
+            "message" => "User name already exists. Try adding a prefix or business name.",
+            "code" => 409
+        ]);
         exit;
     }
     $check->close();
 
 
+
     try {
-        // Hash password
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         // Prepare SQL
         $stmt = $conn->prepare(
-            "INSERT INTO users (name, email, phone, address, password, agent, agent_id) 
-             VALUES (?, ?, ?, ?, ?, ?, ?)"
+            "UPDATE users SET name = ?, email = ?, phone = ?, address = ?, nextofkin = ? WHERE user_id = ?"
         );
 
-        $stmt->bind_param("sssssss", $name, $email, $phone, $address, $hashed_password, $agent, $agent_id);
+        $stmt->bind_param("ssssss", $name, $email, $phone, $address, $nextofKin, $user_id);
 
         if ($stmt->execute()) {
             $response = [
                 "status"  => "success",
-                "message" => "Successfully created account for $name",
+                "message" => "Successfully Updated  User info ",
                 "code"    => 200
             ];
-       
-          // Clean name
-$nameClean = strtolower($name);
-$nameClean = preg_replace('/\s+/', '', $nameClean);
-$nameClean = preg_replace('/[^a-z0-9]/', '', $nameClean);
+           
 
-// Generate random string
-function generateRandomString($length = 6) {
-    return substr(strtoupper(bin2hex(random_bytes(4))), 0, $length);
-}
-
-// Create user_id
-$user_id = $nameClean . '-' . generateRandomString(6);
-
-// Update query
-$updateId = $conn->prepare("UPDATE users
-    SET user_id = ?
-    WHERE name = ?
+            // Save to User info
+$update = $conn->prepare("
+    UPDATE auth_users
+    SET username = ?
+    WHERE user_id = ? AND user_type = ?
 ");
 
-$updateId->bind_param("ss", $user_id, $name);
-$updateId->execute();
-
-
-                        // Save to User info
-$update = $conn->prepare("INSERT INTO auth_users(username, user_id, user_type , password_hash) VALUES(?, ?, ?, ?)");
-
-$update->bind_param("ssss", $name, $user_id, $target_tb, $hashed_password);
+$update->bind_param("sss", $name, $user_id, $target_tb);
 $update->execute();
-
-
-
-
 
             // notification Insert
             $stmtNotify = $conn->prepare("INSERT INTO notifications (actor_type, actor_id, action,	target_table,target_id, message) VALUES (?, ?, ?, ?, ?, ?)");
             $stmtNotify->bind_param('ssssss', $actor_type, $agent_id, $action_type, $target_tb, $user_id, $message);
             $stmtNotify->execute();
 
-                        // Get user email
+            // Get user email
+            $stmtgetEmail = $conn->prepare("SELECT `email` FROM users WHERE user_id = ?");
+            $stmtgetEmail->bind_param("i", $user_id);
+            $stmtgetEmail->execute();
+            $result = $stmtgetEmail->get_result();
 
-                $recipientEmail = $email; 
+            if ($row = $result->fetch_assoc()) {
+                $recipientEmail = trim($row['email']);
                 if ($recipientEmail) {
                     $mail = new PHPMailer(true);
-                    $subject = "Welcome to SavingHub 🎉 Your account is ready!";
+                    $subject = "SavingHub Account Update";
                     $body = "
                     <p>&#128075; Dear $name,</p>
-                    <p>&#9989; Your SavingHub account has been successfully created.</p>
-                    <p>&#127881; Thank you for joining us!</p>
-                    ";
+                    <p>&#9989; Your SavingHub account has been successfully updated.</p>
+                    <h3>📋 Account Details</h3>
+                    <p><strong>Name:</strong> $name <br>
+                    <strong>Email:</strong> $email <br>
+                    <strong>Phone:</strong> $phone <br>
+                    <strong>Address:</strong> $address <br>
+                    <strong>Next of Kin:</strong> $nextofKin</p>
+                    <p>&#127881; Thank you for saving with us!</p>
+                   <p>— The SavingHub Team</p>";
+
 
                     try {
                         //Server settings
@@ -157,9 +153,7 @@ $update->execute();
                         // Email failed, but contribution still recorded
                     }
                 }
-            
-            // end of email insert
-
+            }
         } else {
             $response = [
                 "status"  => "error",

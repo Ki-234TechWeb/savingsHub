@@ -15,38 +15,38 @@ navLinks.forEach((navLink) => {
   });
 });
 
-const activePlans = [
-  {
-    id: 1,
-    user: "Chioma Nwosu",
-    type: "Weekly",
-    target: "₦50,000",
-    collected: "₦32,500",
-    progress: 65,
-    start: "2025-09-01",
-    end: "2025-12-31",
-  },
-  {
-    id: 2,
-    user: "Tunde Adesanya",
-    type: "Monthly",
-    target: "₦100,000",
-    collected: "₦75,000",
-    progress: 75,
-    start: "2025-08-01",
-    end: "2025-12-31",
-  },
-  {
-    id: 3,
-    user: "Grace Eze",
-    type: "Daily",
-    target: "₦30,000",
-    collected: "₦28,500",
-    progress: 95,
-    start: "2025-10-01",
-    end: "2025-12-31",
-  },
-];
+// const activePlans = [
+//   {
+//     id: 1,
+//     user: "Chioma Nwosu",
+//     type: "Weekly",
+//     target: "₦50,000",
+//     collected: "₦32,500",
+//     progress: 65,
+//     start: "2025-09-01",
+//     end: "2025-12-31",
+//   },
+//   {
+//     id: 2,
+//     user: "Tunde Adesanya",
+//     type: "Monthly",
+//     target: "₦100,000",
+//     collected: "₦75,000",
+//     progress: 75,
+//     start: "2025-08-01",
+//     end: "2025-12-31",
+//   },
+//   {
+//     id: 3,
+//     user: "Grace Eze",
+//     type: "Daily",
+//     target: "₦30,000",
+//     collected: "₦28,500",
+//     progress: 95,
+//     start: "2025-10-01",
+//     end: "2025-12-31",
+//   },
+// ];
 
 
 // Tab Navigation
@@ -107,26 +107,7 @@ function refreshPortfolio() {
   showNotification("Portfolio refreshed successfully", "success");
   
 }
-
-// function handleCreateUser(event) {
-//   event.preventDefault();
-//   showNotification("New user created successfully", "success");
-//   event.target.reset();
-// }
-
-// function handleRecordCollection(event) {
-//   event.preventDefault();
-//   showNotification("Collection recorded successfully", "success");
-//   closeModal("recordCollectionModal");
-//   event.target.reset();
-// }
-
-// function handleSetupPlan(event) {
-//   event.preventDefault();
-//   showNotification("Plan setup successfully for user", "success");
-//   closeModal("setupPlanModal");
-//   event.target.reset();
-// }
+  // <button class="notification-close" onclick="this.parentElement.remove()">✕</button>
 
 // Notification System
 function showNotification(message, type = "info") {
@@ -135,7 +116,7 @@ function showNotification(message, type = "info") {
   notification.className = `notification ${type}`;
   notification.innerHTML = `
                 ${message}
-                <button class="notification-close" onclick="this.parentElement.remove()">✕</button>
+  
             `;
   container.appendChild(notification);
 

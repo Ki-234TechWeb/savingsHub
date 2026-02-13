@@ -1,0 +1,223 @@
+ * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #f5f7fb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+/* Typography */
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.5rem;
+}
+
+h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--muted-foreground);
+}
+
+    .login-card {
+      
+      max-width: 380px;
+      min-width: 300px;
+      background: #ffffff;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    }
+
+    .login-card h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      font-weight: 600;
+      color: #111;
+    }
+
+    .login-card p {
+      margin: 0 0 24px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: #4f46e5;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #4f46e5;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #4338ca;
+    }
+
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .error {
+      margin-top: 12px;
+      color: #dc2626;
+      font-size: 13px;
+      display: none;
+    }
+
+ 
+ 
+ /* Notifications */
+      #notificationsContainer{
+display: flex;
+justify-content: right;
+z-index: 11111111111111;
+  animation: slideIn 0.3s ease;
+ 
+}
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+       .notification.info {
+  background-color: oklch(0.45 0.15 260 / 0.1);
+  color: var(--info);
+   position: fixed;
+  top: 10%;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-right: 30px;
+  margin-top: 2rem;
+    padding:5px 10px ;
+  flex-wrap: wrap;
+  gap: 1rem;
+  animation: slideIn 0.3s ease;
+  align-items: center;
+   border-radius: 5px;
+}
+
+.notification.success {
+  background-color: rgba(60, 136, 42, 0.9);
+  color: white;
+  position: fixed;
+  top: 10%;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-right: 30px;
+  margin-top: 2rem;
+    padding:5px 10px ;
+  flex-wrap: wrap;
+  gap: 1rem;
+  animation: slideIn 0.3s ease;
+  align-items: center;
+   border-radius: 5px;
+
+}
+
+.notification.warning {
+  background-color: oklch(0.75 0.12 50 / 0.1);
+  color: var(--warning);
+    position: fixed;
+  top: 10%;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-right: 30px;
+  margin-top: 2rem;
+    padding:5px 10px ;
+  flex-wrap: wrap;
+  gap: 1rem;
+  animation: slideIn 0.3s ease;
+  align-items: center;
+   border-radius: 5px;
+}
+
+.notification.error {
+  background-color: rgba(245, 10, 22, 0.9);
+  color: white;
+   position: fixed;
+  top: 10%;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-right: 30px;
+  margin-top: 2rem;
+    padding:5px 10px ;
+  flex-wrap: wrap;
+  gap: 1rem;
+  animation: slideIn 0.3s ease;
+  align-items: center;
+   border-radius: 5px;
+}
+
+.notification-close {
+  margin-left: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: inherit;
+}
+
+ 

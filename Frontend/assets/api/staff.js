@@ -6,18 +6,89 @@ let monthlyCollection = [];
 let collectionsSummary = [];
 let notifications = [];
 let staff = [];
+let singleStaff = [];
 let userplans = [];
+ const token = localStorage.getItem("token");
+     let welcomeName = document.querySelectorAll('.Welcome')
+     welcomeName.forEach(item => {
+      item.textContent = localStorage.getItem("user_name")
+     });
+let globalName = localStorage.getItem("user_name")
+console.log(globalName)
+
+const BASE_URL = window.location.origin;
+
+function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("role");
+  window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/login.html`;
+}
+if (localStorage.getItem("user_role") !== "agent") {
+  logout();
+}
+async function authFetch(url, options = {}) {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    logout();
+    throw new Error("No token");
+  }
+
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      ...(options.headers || {}),
+      "Authorization": "Bearer " + token,
+      "Content-Type": "application/json"
+    }
+  });
+
+  if (!response.ok && response.status === 401) {
+    alert("Session expired. Logging out.");
+    logout();
+    throw new Error("Session expired");
+  }
+
+  return response;
+}
+
+async function loadData() {
+  try {
+    const response = await authFetch(`${BASE_URL}/savinghub/backend/api/staff/get.php`);
+    const data = await response.json();
+    console.log(data);
+  } catch (err) {
+    console.log(err.message); // "Session expired"
+  }
+}
+
+loadData();
+
+const homepageSpin = document.querySelector('.pageloader');
 async function fetchUsers() {
   try {
     const BASE_URL = window.location.origin;
+           if (!token) {
+      window.location.href = "/savinghub/Frontend/dashboards/login.html";
+      return;
+    }
     const response = await fetch(
-      `${BASE_URL}/savinghub/backend/api/staff/get.php?type=user`
+      `${BASE_URL}/savinghub/backend/api/staff/get.php?type=user`,
+            {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        }
+      }
+
     );
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     let data = await response.json();
+    
     portfolioUsers = data.users || [];
     let users = portfolioUsers;
     let select = document.querySelector(".users");
@@ -31,17 +102,125 @@ async function fetchUsers() {
     });
 
     renderPortfolioUsers(portfolioUsers);
+    
   } catch (error) {
     console.error("Error fetching users:", error);
+  }finally {
+    
+     setTimeout(() => {
+         homepageSpin.style.display = "none";
+      }, 2000);
+   
   }
 }
 fetchUsers();
 
+
+// Sending Data
+document.addEventListener("click", async function(e) {
+  if (e.target.classList.contains("updateUser")) {
+  const updateModal = document.getElementById("updateUser");
+  if (!updateModal) return;
+  let btn = e.target.closest(".updateUser");
+ let user_ids = btn.getAttribute("data-user-id");
+  
+  updateModal.style.display = "flex"; 
+
+ try {
+     if (!token) {
+      window.location.href = "/savinghub/Frontend/dashboards/login.html";
+      return;
+    }
+    const res = await fetch(`/savinghub/backend/api/staff/get.php?type=singleUser&id=${user_ids}`,
+            {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        }
+      }
+
+    );
+    const dataUser= await res.json();
+    let data = dataUser.userUpdate || [];
+    let user = data[0]; 
+      document.querySelector(".nameUpdate").value = user.name || "";
+    document.querySelector(".emailUpdate").value = user.email || ""; // only works if backend sends "email"
+      updateModal.querySelector(".phoneUpdate").value = user.phone || "";
+      updateModal.querySelector(".addressUpdate").value = user.address || "";
+      updateModal.querySelector(".nextofKinUpdate").value = user.nextofkin || "";
+        user.next_of_kin || "";
+       document.querySelector(".staffAgent").value = user.agent_id || "";
+       document.querySelector(".Usersid").value = user.user_id || "";
+  } catch (err) {
+    console.error("Error fetching user:", err);
+  }
+  }
+});
+
+
+
+
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("closeUpdate")) {
+  const updateModal = document.getElementById("updateUser");
+  if (!updateModal) return;
+  updateModal.style.display = "none"; 
+
+
+  }
+});
+
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("update_content")) {
+  const update_content = document.getElementById("updateUser");
+  if (!update_content) return;
+  update_content.style.display = "none"; 
+
+
+  }
+});
+
+
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("closeEditColl")) {
+  const update_record = document.getElementById("recordCollectionModalEdit");
+  if (!update_record) return;
+  update_record.style.display = "none"; 
+
+
+  }
+});
+
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("recordCollect")) {
+  const update_record = document.getElementById("recordCollectionModalEdit");
+  if (!update_record) return;
+  update_record.style.display = "none"; 
+
+
+  }
+});
+
+
+
 async function fetchUserPlans() {
   try {
     const BASE_URL = window.location.origin;
+       if (!token) {
+      window.location.href = "/savinghub/Frontend/dashboards/login.html";
+      return;
+    }
     const response = await fetch(
-      `${BASE_URL}/savinghub/backend/api/staff/get.php?type=userPlans`
+      `${BASE_URL}/savinghub/backend/api/staff/get.php?type=userPlans`,
+            {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        }
+      }
+
     );
 
     if (!response.ok) {
@@ -142,9 +321,9 @@ function renderPortfolioUsers(portfolioUsers = []) {
           </span>
         </td>
         <td>
-          <button class="button btn-sm btn-outline" onclick="viewUserDetails(${
-            user.user_id
-          })">View</button>
+          <button class="button btn-sm btn-outline updateUser" data-user-id="${user.user_id}"> View user
+           </button>
+
         </td>
       </tr>
     `;
@@ -169,19 +348,69 @@ async function renderCollectionsHistory() {
       summaryRes,
       pendingRes,
     ] = await Promise.all([
-      fetch(`${BASE_URL}/savinghub/backend/api/staff/get.php?type=collections`),
-      fetch(
-        `${BASE_URL}/savinghub/backend/api/staff/get.php?type=todaysCollections`
+      fetch(`${BASE_URL}/savinghub/backend/api/staff/get.php?type=collections`,
+              {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        }
+      }
+
       ),
       fetch(
-        `${BASE_URL}/savinghub/backend/api/staff/get.php?type=weeklyCollections`
+        `${BASE_URL}/savinghub/backend/api/staff/get.php?type=todaysCollections`,
+              {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        }
+      }
+
       ),
-      fetch(`${BASE_URL}/savinghub/backend/api/staff/get.php?type=monthly`),
       fetch(
-        `${BASE_URL}/savinghub/backend/api/staff/get.php?type=collectionsSummary`
+        `${BASE_URL}/savinghub/backend/api/staff/get.php?type=weeklyCollections`,
+              {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        }
+      }
+
+      ),
+      fetch(`${BASE_URL}/savinghub/backend/api/staff/get.php?type=monthly`,
+              {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        }
+      }
+
       ),
       fetch(
-        `${BASE_URL}/savinghub/backend/api/staff/get.php?type=todaysPendingCollections`
+        `${BASE_URL}/savinghub/backend/api/staff/get.php?type=collectionsSummary`,
+              {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        }
+      }
+
+      ),
+      fetch(
+        `${BASE_URL}/savinghub/backend/api/staff/get.php?type=todaysPendingCollections`,
+              {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        }
+      }
+
       ),
     ]);
 
@@ -206,9 +435,6 @@ async function renderCollectionsHistory() {
     const todaysCollections = todaysData.todaysCollections || [];
     const monthlyCollection = monthlyData.monthlyCollection || [];
     const weeklyCollections = (await weeklyData.weeklyCollections) || [];
-    const pendingData = await pendingRes.json();
-    const todaysPendingCollections = pendingData.todaysPendingCollections || [];
-    let pendingCollect = todaysPendingCollections.pending_collections;
     const todays_num = collectionsSummary.todays_total;
     let today_total = Number(todays_num);
     const weekly_num = collectionsSummary.weekly_total;
@@ -221,9 +447,8 @@ async function renderCollectionsHistory() {
       weekly_total.toLocaleString("en-US");
     document.querySelector(".monthly_collection").innerHTML =
       monthly_total.toLocaleString("en-US");
-    document.querySelector(".pending_collection").innerHTML = pendingCollect;
+  
 
-    console.log(todaysPendingCollections);
     let filteredCollections = [];
 
     if (filterValue === "Recent") {
@@ -263,26 +488,40 @@ async function renderCollectionsHistory() {
               </span>
             </td>
             <td>
-              <button class="button btn-sm btn-outline" onclick="editCollection(${
-                collection.id
-              })">Edit</button>
+              <button class="button btn-sm btn-outline collectionEdit " data-collect-id= "${collection.contribution_id}" data-collect-userid= "${collection.user_id}" data-collect-agentid= "${collection.agent_id}" data-collect-username= "${collection.name}" data-collect-userdate= "${collection.date}" data-collect-useramount= "${collection.amount}">Edit</button>
             </td>
           </tr>
         `;
       })
       .join("");
+
+
   } catch (error) {
     console.error("Error rendering collections:", error);
     tbody.innerHTML = `<tr><td colspan="6">Failed to load collections</td></tr>`;
   }
 }
 
-renderCollectionsHistory();
+renderCollectionsHistory()
+
+
 async function fetchStaff() {
   try {
     const BASE_URL = window.location.origin;
+        if (!token) {
+      window.location.href = "/savinghub/Frontend/dashboards/login.html";
+      return;
+    }
     const response = await fetch(
-      `${BASE_URL}/savinghub/backend/api/staff/get.php?type=staff`
+      `${BASE_URL}/savinghub/backend/api/staff/get.php?type=staff`,
+            {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        }
+      }
+
     );
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -302,6 +541,58 @@ async function fetchStaff() {
   }
 }
 fetchStaff();
+
+
+
+async function fetchStaffSettings() {
+  try {
+    const BASE_URL = window.location.origin;
+        if (!token) {
+      window.location.href = "/savinghub/Frontend/dashboards/login.html";
+      return;
+    }
+    const response = await fetch(
+      `${BASE_URL}/savinghub/backend/api/staff/get.php?type=singleStaff`,
+            {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        }
+      }
+
+    );
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+    const data = await response.json();
+    const staff1 = (data.singleStaff && data.singleStaff[0]) || {};
+
+    // update DOM
+    document.querySelectorAll(".staffName").forEach(item => {
+      item.textContent = staff1.name;
+      item.value = staff1.name;
+    });
+
+    // const staffPass = document.querySelector(".staffPass");
+    const staffMail = document.querySelector(".staffMail");
+     const staffNewMail = document.querySelector(".staffNewMail");
+    const staffId = document.querySelector(".staffId");
+    const staffPhone = document.querySelector(".staffPhone")
+    const staffAddress = document.querySelector(".staffAddress")
+    // if (staffPass) staffPass.value = staff1.password;
+    if (staffMail) staffMail.innerHTML = staff1.email;
+     if (staffNewMail) staffNewMail.value = staff1.email;
+    if (staffId) staffId.innerHTML = staff1.agent_id;
+    if (staffPhone) staffPhone.value = staff1.phone;
+    if (staffAddress) staffAddress.value = staff1.address;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
+}
+
+fetchStaffSettings();
+
+
 // Render Active Plans Table
 function renderActivePlans(userplans = []) {
   const tbody = document.getElementById("activePlansBody");
@@ -324,14 +615,20 @@ function renderActivePlans(userplans = []) {
           "background-color: red; color: #fff; padding: 4px 10px; border-radius: 4px;";
       }
 
-      let statusClass = "";
-      if (plan.status === "in progress") {
-        statusClass =
-          "  background-color: rgb(244, 247, 84);color: #000000ff; padding: 4px 10px;border-radius:4px; text-align: center;";
-      } else if (plan.status === "completed") {
-        statusClass =
-          "background-color: green;color: #fff;padding: 4px 10px;border-radius: 4px;text-align: center;";
-      }
+      const statusStyles = {
+  "in progress": "background:#fff8cc;color:#7a6200;",
+  "completed": "background:#e6f9f0;color:#047857;",
+  "payment approved": "background:#e6f9f0;color:#047857;",
+};
+
+const statusClass = `
+  ${statusStyles[plan.status] || "background:#f1f5f9;color:#475569;"}
+  padding:4px 12px;
+  border-radius:999px;
+  font-weight:500;
+  text-align:center;
+`;
+
 
       return `
         <tr>
@@ -350,6 +647,8 @@ function renderActivePlans(userplans = []) {
           <td><span style="${statusClass}">${plan.status}</span></td>
           <td>${plan.start_date}</td>
           <td>${plan.duration_months} month(s)</td>
+          <td> <button class="button btn-sm btn-destructive2 closePlan" data-plan-id="${plan.user_plan_id}" data-agent-id="${plan.agent_id}" data-user-name="${plan.user_name}"> Close Plan
+           </button> </td>
           
         </tr>
       `;
@@ -357,11 +656,79 @@ function renderActivePlans(userplans = []) {
     .join("");
 }
 
+
+document.addEventListener("click", async function(e) {
+  if (e.target.classList.contains("closePlan")) {
+    let btn = e.target.closest(".closePlan");
+    const deleteId = btn.getAttribute("data-plan-id");
+    const deleteAgentId = btn.getAttribute("data-agent-id");
+    const deleteUserName = btn.getAttribute("data-user-name");
+
+    // Confirmation dialog
+    const confirmed = confirm(
+      `Are you sure you want to close/delete the plan for ${deleteUserName}?`
+    );
+
+    if (!confirmed) {
+      return; // stop if user cancels
+    }
+
+    const deleteFormData = {
+      deleteId,
+      deleteAgentId,
+      deleteUserName
+    };
+
+    try {
+      const BASE_URL = window.location.origin;
+          if (!token) {
+      window.location.href = "/savinghub/Frontend/dashboards/login.html";
+      return;
+    }
+      const res = await fetch(
+        `${BASE_URL}/savinghub/backend/api/staff/delete.php`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(deleteFormData)
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.status === "success") {
+        showNotification(data.message, "success");
+
+        setTimeout(() => {
+          window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/staff.html`;
+        }, 1500);
+      } else {
+        showNotification(data.message, "error");
+      }
+    } catch (error) {
+      showNotification("Server error: " + error.message, "error");
+    }
+  }
+});
+
+
 async function fetchNotifyData() {
   try {
     const BASE_URL = window.location.origin;
+        if (!token) {
+      window.location.href = "/savinghub/Frontend/dashboards/login.html";
+      return;
+    }
     const response = await fetch(
-      `${BASE_URL}/savinghub/backend/api/staff/get.php?type=notifications`
+      `${BASE_URL}/savinghub/backend/api/staff/get.php?type=notifications`,
+            {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Content-Type": "application/json"
+        }
+      }
+
     );
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -373,19 +740,21 @@ async function fetchNotifyData() {
     console.error("Error fetching users:", error);
   }
 }
-
+const notify2 = document.querySelector(".showNotify")
+    notify2.addEventListener('click',function(){
 fetchNotifyData();
+    })
+
+
 let currentPage = 1;
 const rowsPerPage = 10;
-let filteredD = []; // global notifications array
+let filteredD = []; 
 
 async function renderTable(notifications ) {
   const body = document.getElementById("notify-body");
   body.innerHTML = "";
  page = currentPage;
- console.log(notifications)
  filteredD = notifications
- console.log(filteredD)
   const start = (page - 1) * rowsPerPage;
   const end = start + rowsPerPage;
 
@@ -449,3 +818,4 @@ function resetFilter(notifications ) {
  // <-- set this to your actual data
 renderTable(filteredD, currentPage);
 
+ 

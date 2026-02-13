@@ -1,11 +1,11 @@
 const planForm = document.getElementById('plans');
- const setplans = document.querySelector('.setplan')
+ const Adminsetplans = document.querySelector('.setplan')
 planForm.addEventListener("submit", handleSetupPlan );
-const spinnerSetplan = document.querySelector('.pageloader');
+const spinnerAdminSetplan = document.querySelector('.pageloader');
 async function handleSetupPlan(event) {
   event.preventDefault();
   
-setplans.style.display = "none";
+Adminsetplans.style.display = "none";
 let select = document.querySelector(".users");
   let user = select.value.trim();
   let agentId = select.options[select.selectedIndex].dataset.agentId;
@@ -32,10 +32,10 @@ let select = document.querySelector(".users");
   contribution: contribution,
   Commision: Commision
 };
-spinnerSetplan.style.display = "flex";
+spinnerAdminSetplan.style.display = "flex";
   try {
     const BASE_URL = window.location.origin;
-    const res = await fetch(`${BASE_URL}/savinghub/backend/api/staff/setPlans.php`, {
+    const res = await fetch(`${BASE_URL}/savinghub/backend/api/admin/setPlans.php`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }, // tell PHP it's JSON
       body: JSON.stringify(formData) // convert object to JSON string
@@ -45,7 +45,7 @@ spinnerSetplan.style.display = "flex";
     if (data.status === "success") {
       showNotification(data.message, "success");
      setTimeout(() => {
-    window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/staff.html`;
+    window.location.href = `${BASE_URL}/savinghub/Frontend/dashboards/admin.html`;
   }, 2000); 
     } else {
       showNotification(data.message, "error");
@@ -58,15 +58,15 @@ spinnerSetplan.style.display = "flex";
 }
 
 
-setplans.addEventListener("click", function(event){
+Adminsetplans.addEventListener("click", function(event){
   handleSetupPlan(event);
  
 })
 
 
 function restoreSetplanButton() {
- spinnerSetplan.style.display = "none";
-  setplans.style.display = "block";
+ spinnerAdminSetplan.style.display = "none";
+  Adminsetplans.style.display = "block";
 
 }
 
